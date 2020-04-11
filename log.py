@@ -20,4 +20,4 @@ def out_log(url,send_msg="None",response_msg="None"):
         file.write("\r")
         file.close()
 if __name__ == "__main__":
-    out_log()
+    out_log(url="aaa")

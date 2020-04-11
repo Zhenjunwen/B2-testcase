@@ -1,8 +1,0 @@
-Traceback (most recent call last):
-  File "F:/B2_Androidtest/B2_C2C_api.py", line 776, in <module>
-    c2c_all(token_wen, token_junxin, sys_token,symbol="BTC-CNY",amount=0.05,price=49000.12,quantity=0.5)
-  File "F:/B2_Androidtest/B2_C2C_api.py", line 557, in c2c_all
-    trx_id = user_sell_transaction(token_junxin,order_id,amount,price)  # 客户下卖单
-  File "F:/B2_Androidtest/B2_C2C_api.py", line 188, in user_sell_transaction
-    user_sell_pay_detail = json.dumps(sell_payway_detail(token_wen)[0])
-TypeError: 'NoneType' object is not subscriptable

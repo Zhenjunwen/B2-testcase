@@ -780,5 +780,6 @@ if __name__ == "__main__":
         traceback.print_exc(file=open(r'logs\err.log','w+'))
 
     finally:
+        # pass
         cancel_all_orders(token_wen) # 下架所有广告
 

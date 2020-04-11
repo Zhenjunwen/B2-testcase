@@ -137,7 +137,7 @@ def user_register(sms_type,account,password):
 
 
 if __name__ == "__main__":
-    # console_out('F:\B2_Androidtest\logs\logging.log')
+    # console_out('F:\mohu-test\logs\logging.log')
     # verification_token = login_step1("15521057551","zjw971006")
     # print(verification_token)
     # verification_id = send_sms("2","15521057551")
