@@ -7,35 +7,37 @@ from log import out_log
 from login_register import user_login
 from signature import get_signture
 
-# sunqian_url = "http://192.168.0.22:12024" #孙骞
+# B3_url = "http://192.168.0.22:12024" #孙骞
+B3_url = "https://api.b3dev.xyz" #B3dev
 # B2_url = "http://api.b2dev.xyz" #B2dev
-B2_url = "http://api.b2sit.xyz" #B2sit
+# B2_url = "http://api.b2sit.xyz" #B2sit
 # B2_url = "http://api.b2sim.xyz" #B2sim
 token_junxin = "17d740ce53869ceb3dce06e943e88488"  # 俊鑫token
 token_wen = "7893e454c38358872bb9fbcbb78f965c"  # 俊文token
 sys_token = "2da373f6d5ffc1f6a42120eb5a893adb" #B2后台token
-H5_apikey = "alLzET7dFLYN5ONg"
-H5_apisecret = "rpoEwZeM"
-sys_apikey = "4NHMhvsQ15TFNyVO"
-sys_apisecret = "h8eiT26J"
-Android_apikey = "ctyD04PtGMIsJtNZ"
-Android_apisecret = "41DwD4ST"
+H5_apikey = "sUY7qsoHudTrw2Ct"
+H5_apisecret = "gEq76SZv"
+sys_apikey = "5S7NukaMpMVW8U4Z"
+sys_apisecret = "p0fbgZI0"
+Android_apikey = "qbmkIS55ptjBhZFp"
+Android_apisecret = "7M1H4mXA"
+IOS_apikey = "oStkKLmJ5Q8S4n3b"
+IOS_apisecret = "gKByU6HC"
 
 def get_tradePairs():
     # 获取交易对
-    url = '%s/api/v1/common/get_tradePairs' % B2_url
-    parmas_get_tradePairs = {}
+    url = '%s/api/v1/common/get_tradePairs' % B3_url
     run = RunMain(url=url, params=None, data=None, headers=get_signture(H5_apikey,H5_apisecret), method='GET')
     out_log(url, response_msg=json.loads(run.response))
     print(json.loads(run.response))
 
 def user_payway_get_list(token_junxin):
     # 获取收付款列表
-    url = "%s/api/v1/payway/get_list" % B2_url
-    parmas_payway_get_list = {
+    url = "%s/api/v1/payway/get_list" % B3_url
+    body = {
         "token": token_junxin
     }
-    run = RunMain(url=url, params=None, data=parmas_payway_get_list, headers=get_signture(H5_apikey, H5_apisecret,parmas_payway_get_list), method='POST')
+    run = RunMain(url=url, params=None, data=body, headers=get_signture(H5_apikey, H5_apisecret,body), method='POST')
     out_log(url, response_msg=json.loads(run.response))
     if json.loads(run.response)["code"] == 1000:
         pay_detail = json.loads(run.response)["data"]
@@ -46,11 +48,11 @@ def user_payway_get_list(token_junxin):
 
 def busines_payway_get_list(token_wen):
     # 获取收付款列表
-    url = "%s/api/v1/payway/get_list" % B2_url
-    parmas_payway_get_list = {
+    url = "%s/api/v1/payway/get_list" % B3_url
+    body = {
         "token": token_wen
     }
-    run = RunMain(url=url, params=None, data=parmas_payway_get_list, headers=get_signture(H5_apikey,H5_apisecret,parmas_payway_get_list), method='POST')
+    run = RunMain(url=url, params=None, data=body, headers=get_signture(H5_apikey,H5_apisecret,body), method='POST')
     out_log(url, response_msg=json.loads(run.response))
     if json.loads(run.response)["code"] == 1000:
         pay_detail = json.loads(run.response)["data"]
@@ -62,11 +64,11 @@ def busines_payway_get_list(token_wen):
 # 商户下买单的pay_detail
 def buy_payway_detail(token_wen):
     # 获取收付款列表
-    url = "%s/api/v1/payway/get_list"%B2_url
-    parmas_payway_get_list = {
+    url = "%s/api/v1/payway/get_list"%B3_url
+    body = {
         "token": token_wen
     }
-    run = RunMain(url=url, params=None, data= parmas_payway_get_list, headers=get_signture(H5_apikey,H5_apisecret,parmas_payway_get_list), method='POST')
+    run = RunMain(url=url, params=None, data= body, headers=get_signture(H5_apikey,H5_apisecret,body), method='POST')
     out_log(url, response_msg=json.loads(run.response))
     if json.loads(run.response)["code"] == 1000:
         # print(json.loads(run.response))
@@ -90,11 +92,11 @@ def buy_payway_detail(token_wen):
 # 商户下卖单的pay_detail
 def sell_payway_detail(token_wen):
     # 获取收付款列表
-    url = "%s/api/v1/payway/get_list" % B2_url
-    parmas_payway_get_list = {
+    url = "%s/api/v1/payway/get_list" % B3_url
+    body = {
         "token": token_wen
     }
-    run = RunMain(url=url, params=None, data=parmas_payway_get_list, headers=get_signture(H5_apikey,H5_apisecret,parmas_payway_get_list), method='POST')
+    run = RunMain(url=url, params=None, data=body, headers=get_signture(H5_apikey,H5_apisecret,body), method='POST')
     out_log(url, response_msg=json.loads(run.response))
     if json.loads(run.response)["code"] == 1000:
         # 发布广告的收付款详情
@@ -112,13 +114,13 @@ def sell_payway_detail(token_wen):
 
 def add_order(price,quantity,side,min_trx_cash,pay_way,symbol):
     # 商户发布买入广告
-    url = '%s/api/v1/otc/add_order'%B2_url
+    url = '%s/api/v1/otc/add_order'%B3_url
     pay_detail = buy_payway_detail(token_wen)
     payway_detail = json.dumps(pay_detail)
     # print((buy_pay_detail))
     # print(pay_detail)
     # 发布广告的收付款详情
-    parmas_add_order ={
+    body ={
         "token": token_wen,# 文，商户
         "price": str(price),  #发布广告价格
         "quantity": str(format(quantity,".8f")),  #发布广告数量
@@ -131,7 +133,7 @@ def add_order(price,quantity,side,min_trx_cash,pay_way,symbol):
         "pay_detail": payway_detail,#银行卡收付款信息详情（JSON数组格式字符串），具体格式定义见 备注
         "nationality": "156" #所属国家或地区（三位数字代码）, 默认值：156
     }
-    run = RunMain(url= url, params=None, data=parmas_add_order, headers=get_signture(H5_apikey,H5_apisecret,parmas_add_order), method='POST')
+    run = RunMain(url= url, params=None, data=body, headers=get_signture(H5_apikey,H5_apisecret,body), method='POST')
     out_log(url, response_msg=json.loads(run.response))
     if json.loads(run.response)["code"] == 1000:
         order_id = json.loads(run.response)["data"]["order_id"] #将返回值转换成字典
@@ -148,12 +150,12 @@ def add_order(price,quantity,side,min_trx_cash,pay_way,symbol):
 
 def cancel_order(token_wen,order_id):
     #商户下架广告
-    url = "%s/api/v1/otc/cancel_order"%B2_url
-    parmas_cancel_order = {
+    url = "%s/api/v1/otc/cancel_order"%B3_url
+    body = {
         "token":token_wen,
         "order_id":order_id
     }
-    run = RunMain(url= url, params=None, data=parmas_cancel_order, headers=get_signture(H5_apikey,H5_apisecret,parmas_cancel_order), method='POST')
+    run = RunMain(url= url, params=None, data=body, headers=get_signture(H5_apikey,H5_apisecret,body), method='POST')
     out_log(url, response_msg=json.loads(run.response))
     if json.loads(run.response)["code"] == 1000:
         print("order_id:%s 下架广告成功" % order_id)
@@ -163,8 +165,8 @@ def cancel_order(token_wen,order_id):
 
 def get_orders(token_wen,state="7",pay_way="0",nationality="0",base_currency="",quote_currency=""):
     #获取商户发布的广告
-    url = "%s/api/v1/otc/get_orders"%B2_url
-    parmas_get_orders = {
+    url = "%s/api/v1/otc/get_orders"%B3_url
+    body = {
         "token":token_wen,
         "page_number":"2",
         "page_size":"10",
@@ -174,7 +176,7 @@ def get_orders(token_wen,state="7",pay_way="0",nationality="0",base_currency="",
         "base_currency":base_currency, #【2020.1.13新增】基础币种，""=全部，默认值：""
         "quote_currency":quote_currency #【2020.1.13新增】报价币种，""=全部，默认值：""
     }
-    run = RunMain(url=  url, params=None, data=parmas_get_orders, headers=get_signture(H5_apikey,H5_apisecret,parmas_get_orders), method='POST')
+    run = RunMain(url=  url, params=None, data=body, headers=get_signture(H5_apikey,H5_apisecret,body), method='POST')
     out_log(url, response_msg=json.loads(run.response))
     if json.loads(run.response)["code"] == 1000:
         print("获取商户发布的广告")
@@ -184,9 +186,9 @@ def get_orders(token_wen,state="7",pay_way="0",nationality="0",base_currency="",
 
 def user_sell_transaction(token_junxin,order_id,amount,price):
     # 客户下卖单
-    url = "%s/api/v1/otc/add_transaction"%B2_url
+    url = "%s/api/v1/otc/add_transaction"%B3_url
     user_sell_pay_detail = json.dumps(sell_payway_detail(token_wen)[0])
-    parmas_sell_transaction = {
+    body = {
         "token": token_junxin,
         "order_id": order_id,
         "amount":str(format(amount,".8f")),
@@ -195,8 +197,8 @@ def user_sell_transaction(token_junxin,order_id,amount,price):
         "trx_cash":str(format(price*amount,".2f"))
     }
     # print(parmas_sell_transaction)
-    run = RunMain(url= url, params=None, data= parmas_sell_transaction, headers=get_signture(H5_apikey,H5_apisecret,parmas_sell_transaction), method='POST')
-    out_log(url, send_msg=parmas_sell_transaction,response_msg=json.loads(run.response))
+    run = RunMain(url= url, params=None, data= body, headers=get_signture(H5_apikey,H5_apisecret,body), method='POST')
+    out_log(url, send_msg=body,response_msg=json.loads(run.response))
     if json.loads(run.response)["code"] == 1000:
         trx_id = json.loads(run.response)["data"]["trx_id"]
         print("客户下卖单trx_id:%s"%trx_id)
@@ -207,8 +209,8 @@ def user_sell_transaction(token_junxin,order_id,amount,price):
 
 def user_buy_transaction(token_junxin,order_id,amount,price):
     #客户下买单
-    url = "%s/api/v1/otc/add_transaction"%B2_url
-    parmas_add_transaction = {
+    url = "%s/api/v1/otc/add_transaction"%B3_url
+    body = {
         "token": token_junxin,
         "order_id": order_id,
         "amount":str(format(amount,".8f")),
@@ -217,7 +219,7 @@ def user_buy_transaction(token_junxin,order_id,amount,price):
         "trx_cash":str(format(price*amount,".2f"))
     }
     # print(parmas_add_transaction)
-    run = RunMain(url= url, params=None, data= parmas_add_transaction, headers= get_signture(H5_apikey,H5_apisecret,parmas_add_transaction), method='POST')
+    run = RunMain(url= url, params=None, data= body, headers= get_signture(H5_apikey,H5_apisecret,body), method='POST')
     out_log(url, response_msg=json.loads(run.response))
     if json.loads(run.response)["code"] == 1000:
         trx_id = json.loads(run.response)["data"]["trx_id"]
@@ -228,14 +230,14 @@ def user_buy_transaction(token_junxin,order_id,amount,price):
 
 def usersell_business_confirm(token_wen,trx_id):
     # 买币广告-商户确认付款
-    url = "%s/api/v1/otc/usersell_business_confirm" % B2_url
-    parmas_usersell_business_confirm = {
+    url = "%s/api/v1/otc/usersell_business_confirm" % B3_url
+    body = {
         "token": token_wen,
         "trx_id": trx_id
     }
     # print(parmas_usersell_business_confirm)
-    run = RunMain(url=url, params=None, data=parmas_usersell_business_confirm,
-                  headers=get_signture(H5_apikey,H5_apisecret,parmas_usersell_business_confirm), method='POST')
+    run = RunMain(url=url, params=None, data=body,
+                  headers=get_signture(H5_apikey,H5_apisecret,body), method='POST')
     out_log(url, response_msg=json.loads(run.response))
     if json.loads(run.response)["code"] == 1000:
         print("买币广告-商户确认付款")
@@ -245,14 +247,14 @@ def usersell_business_confirm(token_wen,trx_id):
 
 def usersell_customer_confirm(token_wen,trx_id):
     # 买币广告-客户确认收款
-    url = "%s/api/v1/otc/usersell_customer_confirm" % B2_url
-    parmas_usersell_customer_confirm = {
+    url = "%s/api/v1/otc/usersell_customer_confirm" % B3_url
+    body = {
         "token": token_wen,
         "trx_id": trx_id
     }
     # print(parmas_usersell_customer_confirm)
-    run = RunMain(url=url, params=None, data=parmas_usersell_customer_confirm,
-                  headers=get_signture(H5_apikey,H5_apisecret,parmas_usersell_customer_confirm), method='POST')
+    run = RunMain(url=url, params=None, data=body,
+                  headers=get_signture(H5_apikey,H5_apisecret,body), method='POST')
     out_log(url, response_msg=json.loads(run.response))
     if json.loads(run.response)["code"] == 1000:
         print("买币广告-客户确认收款")
@@ -263,14 +265,14 @@ def usersell_customer_confirm(token_wen,trx_id):
 
 def usersell_business_cancel(token_wen,trx_id):
     # 买币广告-商户取消交易
-    url = "%s/api/v1/otc/usersell_business_cancel" % B2_url
-    parmas_usersell_business_cancel = {
+    url = "%s/api/v1/otc/usersell_business_cancel" % B3_url
+    body = {
         "token": token_wen,
         "trx_id": trx_id
     }
     # print(parmas_usersell_business_cancel)
-    run = RunMain(url=url, params=None, data=parmas_usersell_business_cancel,
-                  headers=get_signture(H5_apikey,H5_apisecret,parmas_usersell_business_cancel), method='POST')
+    run = RunMain(url=url, params=None, data=body,
+                  headers=get_signture(H5_apikey,H5_apisecret,body), method='POST')
     out_log(url, response_msg=json.loads(run.response))
     if json.loads(run.response)["code"] == 1000:
         print("买币广告-商户取消交易")
@@ -281,16 +283,16 @@ def usersell_business_cancel(token_wen,trx_id):
 
 def user_customer_confirm_transaction(token_junxin,trx_id):
     # 客户下买单确认付款
-    url = "%s/api/v1/otc/customer_confirm_transaction"%B2_url
+    url = "%s/api/v1/otc/customer_confirm_transaction"%B3_url
     user_sell_pay_detail = json.dumps(sell_payway_detail(token_wen)[0])
-    parmas_customer_confirm_transaction = {
+    body = {
         "token": token_junxin,
         "trx_id": trx_id,
         "pay_way": sell_payway_detail(token_wen)[0]["pay_way"],
         "pay_detail": user_sell_pay_detail
     }
     # print(parmas_customer_confirm_transaction)
-    run = RunMain(url= url, params=None, data= parmas_customer_confirm_transaction, headers=get_signture(H5_apikey,H5_apisecret,parmas_customer_confirm_transaction), method='POST')
+    run = RunMain(url= url, params=None, data= body, headers=get_signture(H5_apikey,H5_apisecret,body), method='POST')
     out_log(url, response_msg=json.loads(run.response))
     if json.loads(run.response)["code"] == 1000:
         print("客户下买单确认付款")
@@ -301,14 +303,14 @@ def user_customer_confirm_transaction(token_junxin,trx_id):
 
 def business_confirm_transaction(token_wen,trx_id):
     # 卖币广告-商户确认收款
-    url = "%s/api/v1/otc/business_confirm_transaction" % B2_url
-    parmas_business_confirm_transaction = {
+    url = "%s/api/v1/otc/business_confirm_transaction" % B3_url
+    body = {
         "token": token_wen,
         "trx_id": trx_id
     }
     # print(parmas_business_confirm_transaction)
-    run = RunMain(url=url, params=None, data=parmas_business_confirm_transaction,
-                  headers=get_signture(H5_apikey,H5_apisecret,parmas_business_confirm_transaction), method='POST')
+    run = RunMain(url=url, params=None, data=body,
+                  headers=get_signture(H5_apikey,H5_apisecret,body), method='POST')
     out_log(url, response_msg=json.loads(run.response))
     if json.loads(run.response)["code"] == 1000:
         print("卖币广告-商户确认收款")
@@ -319,14 +321,14 @@ def business_confirm_transaction(token_wen,trx_id):
 
 def cancel_transaction(token_junxin,trx_id):
     # 卖币广告-客户取消交易
-    url = "%s/api/v1/otc/cancel_transaction" % B2_url
-    parmas_cancel_transaction = {
+    url = "%s/api/v1/otc/cancel_transaction" % B3_url
+    body = {
         "token": token_junxin,
         "trx_id": trx_id
     }
     # print(parmas_cancel_transaction)
-    run = RunMain(url=url, params=None, data=parmas_cancel_transaction,
-                  headers=get_signture(H5_apikey,H5_apisecret,parmas_cancel_transaction), method='POST')
+    run = RunMain(url=url, params=None, data=body,
+                  headers=get_signture(H5_apikey,H5_apisecret,body), method='POST')
     out_log(url, response_msg=json.loads(run.response))
     if json.loads(run.response)["code"] == 1000:
         print("卖币广告-客户取消交易")
@@ -337,14 +339,14 @@ def cancel_transaction(token_junxin,trx_id):
 
 def admin_cancel_usersell_transaction(sys_token,trx_id):
     # C2C交易-买币广告-订单仲裁取消（卖币客户胜诉）
-    url = "%s/api/v1/admin/otc/cancel_usersell_transaction" % B2_url
-    parmas_admin_cancel_usersell_transaction = {
+    url = "%s/api/v1/admin/otc/cancel_usersell_transaction" % B3_url
+    body = {
         "token": sys_token,
         "trx_id": trx_id
     }
     # print(parmas_admin_cancel_usersell_transaction)
-    run = RunMain(url=url, params=None, data=parmas_admin_cancel_usersell_transaction,
-                  headers=get_signture(sys_apikey,sys_apisecret,parmas_admin_cancel_usersell_transaction), method='POST')
+    run = RunMain(url=url, params=None, data=body,
+                  headers=get_signture(sys_apikey,sys_apisecret,body), method='POST')
     out_log(url, response_msg=json.loads(run.response))
     if json.loads(run.response)["code"] == 1000:
         print("C2C交易-买币广告-订单仲裁取消（卖币客户胜诉）")
@@ -355,14 +357,14 @@ def admin_cancel_usersell_transaction(sys_token,trx_id):
 
 def admin_confirm_usersell_transaction(sys_token,trx_id):
     # C2C交易-买币广告-订单仲裁完成（买币商户胜诉）
-    url = "%s/api/v1/admin/otc/confirm_usersell_transaction" % B2_url
-    parmas_admin_confirm_usersell_transaction = {
+    url = "%s/api/v1/admin/otc/confirm_usersell_transaction" % B3_url
+    body = {
         "token": sys_token,
         "trx_id": trx_id
     }
     # print(parmas_admin_confirm_usersell_transaction)
-    run = RunMain(url=url, params=None, data=parmas_admin_confirm_usersell_transaction,
-                  headers=get_signture(sys_apikey,sys_apisecret,parmas_admin_confirm_usersell_transaction), method='POST')
+    run = RunMain(url=url, params=None, data=body,
+                  headers=get_signture(sys_apikey,sys_apisecret,body), method='POST')
     out_log(url, response_msg=json.loads(run.response))
     if json.loads(run.response)["code"] == 1000:
         print("C2C交易-买币广告-订单仲裁完成（买币商户胜诉）")
@@ -373,14 +375,14 @@ def admin_confirm_usersell_transaction(sys_token,trx_id):
 
 def admin_cancel_arbitrated_transaction(sys_token,trx_id):
     # C2C交易-卖币广告-订单仲裁取消（卖币商户胜诉）
-    url= "%s/api/v1/admin/otc/cancel_arbitrated_transaction" % B2_url
-    parmas_admin_cancel_arbitrated_transaction = {
+    url= "%s/api/v1/admin/otc/cancel_arbitrated_transaction" % B3_url
+    body = {
         "token": sys_token,
         "trx_id": trx_id
     }
     # print(parmas_admin_cancel_arbitrated_transaction)
-    run = RunMain(url=url, params=None, data=parmas_admin_cancel_arbitrated_transaction,
-                  headers=get_signture(sys_apikey,sys_apisecret,parmas_admin_cancel_arbitrated_transaction), method='POST')
+    run = RunMain(url=url, params=None, data=body,
+                  headers=get_signture(sys_apikey,sys_apisecret,body), method='POST')
     out_log(url, response_msg=json.loads(run.response))
     if json.loads(run.response)["code"] == 1000:
         print("C2C交易-卖币广告-订单仲裁取消（卖币商户胜诉）")
@@ -391,14 +393,14 @@ def admin_cancel_arbitrated_transaction(sys_token,trx_id):
 
 def admin_confirm_arbitrated_transaction(sys_token,trx_id):
     # C2C交易-卖币广告-订单仲裁完成（买币客户胜诉）
-    url = "%s/api/v1/admin/otc/confirm_arbitrated_transaction" % B2_url
-    parmas_admin_confirm_arbitrated_transaction = {
+    url = "%s/api/v1/admin/otc/confirm_arbitrated_transaction" % B3_url
+    body = {
         "token": sys_token,
         "trx_id": trx_id
     }
     # print(parmas_admin_confirm_arbitrated_transaction)
-    run = RunMain(url=url, params=None, data=parmas_admin_confirm_arbitrated_transaction,
-                  headers=get_signture(sys_apikey,sys_apisecret,parmas_admin_confirm_arbitrated_transaction), method='POST')
+    run = RunMain(url=url, params=None, data=body,
+                  headers=get_signture(sys_apikey,sys_apisecret,body), method='POST')
     out_log(url, response_msg=json.loads(run.response))
     if json.loads(run.response)["code"] == 1000:
         print("C2C交易-卖币广告-订单仲裁完成（买币客户胜诉）")
@@ -409,14 +411,14 @@ def admin_confirm_arbitrated_transaction(sys_token,trx_id):
 
 def get_transaction_detail(token_junxin,trx_id):
     # 获取订单详情
-    url = "%s/api/v1/otc/get_transaction_detail" % B2_url
-    parmas_get_transaction_detail = {
+    url = "%s/api/v1/otc/get_transaction_detail" % B3_url
+    body = {
         "token": token_junxin,
         "trx_id": trx_id
     }
     # print(parmas_get_transaction_detail)
-    run = RunMain(url=url, params=None, data=parmas_get_transaction_detail,
-                  headers=get_signture(H5_apikey,H5_apisecret,parmas_get_transaction_detail), method='POST')
+    run = RunMain(url=url, params=None, data=body,
+                  headers=get_signture(H5_apikey,H5_apisecret,body), method='POST')
     out_log(url, response_msg=json.loads(run.response))
     if json.loads(run.response)["code"] == 1000:
         side = json.loads(run.response)["data"]["side"]
@@ -429,14 +431,14 @@ def get_transaction_detail(token_junxin,trx_id):
 
 def arbitrate_transaction(token,trx_id):
     # 卖家申诉
-    url = "%s/api/v1/otc/arbitrate_transaction" % B2_url
-    parmas_arbitrate_transaction = {
+    url = "%s/api/v1/otc/arbitrate_transaction" % B3_url
+    body = {
         "token": token,
         "trx_id": trx_id
     }
     # print(parmas_arbitrate_transaction)
-    run = RunMain(url=url, params=None, data=parmas_arbitrate_transaction,
-                  headers=get_signture(H5_apikey,H5_apisecret,parmas_arbitrate_transaction), method='POST')
+    run = RunMain(url=url, params=None, data=body,
+                  headers=get_signture(H5_apikey,H5_apisecret,body), method='POST')
     out_log(url, response_msg=json.loads(run.response))
     if json.loads(run.response)["code"] == 1000:
         return run.response
@@ -446,16 +448,16 @@ def arbitrate_transaction(token,trx_id):
 
 def cancel_all_orders(token_wen):
     # 下架商户所有广告
-    url = "%s/api/v1/otc/get_orders" % B2_url
-    parmas_cancel_all_orders = {
+    url = "%s/api/v1/otc/get_orders" % B3_url
+    body = {
         "token": token_wen,
         "page_number": "1",
         "page_size": "20",
         "state":"1"
     }
     # print(parmas_cancel_all_orders)
-    run = RunMain(url=url, params=None, data=parmas_cancel_all_orders,
-                  headers=get_signture(H5_apikey,H5_apisecret,parmas_cancel_all_orders), method='POST')
+    run = RunMain(url=url, params=None, data=body,
+                  headers=get_signture(H5_apikey,H5_apisecret,body), method='POST')
     out_log(url, response_msg=json.loads(run.response))
     if json.loads(run.response)["code"] == 1000:
         data = json.loads(run.response)["data"]
@@ -473,14 +475,14 @@ def cancel_all_orders(token_wen):
 
 def get_transaction_state(token_wen,trx_id):
     # 订单详情
-    url = "%s/api/v1/otc/get_transaction_detail" % B2_url
-    parmas_get_transaction_detail = {
+    url = "%s/api/v1/otc/get_transaction_detail" % B3_url
+    body = {
         "token": token_wen,
         "trx_id": trx_id
     }
     # print(parmas_get_transaction_detail)
-    run = RunMain(url=url, params=None, data=parmas_get_transaction_detail,
-                  headers=get_signture(H5_apikey,H5_apisecret,parmas_get_transaction_detail), method='POST')
+    run = RunMain(url=url, params=None, data=body,
+                  headers=get_signture(H5_apikey,H5_apisecret,body), method='POST')
     out_log(url, response_msg=json.loads(run.response))
     if json.loads(run.response)["code"] == 1000:
         state = json.loads(run.response)['data']['state']  # 获取状态
@@ -493,13 +495,13 @@ def get_transaction_state(token_wen,trx_id):
 
 def get_assets_c2c(token):
     # 订单详情
-    url = "%s/api/v1/wallet/get_assets_c2c" % B2_url
-    parmas_get_assets_c2c = {
+    url = "%s/api/v1/wallet/get_assets_c2c" % B3_url
+    body = {
         "token": token,
     }
     # print(parmas_get_assets_c2c)
-    run = RunMain(url=url, params=None, data=parmas_get_assets_c2c,
-                  headers=get_signture(H5_apikey,H5_apisecret,parmas_get_assets_c2c), method='POST')
+    run = RunMain(url=url, params=None, data=body,
+                  headers=get_signture(H5_apikey,H5_apisecret,body), method='POST')
     out_log(url, response_msg=json.loads(run.response))
     if json.loads(run.response)["code"] == 1000:
         state = json.loads(run.response)['data']['state']  # 获取状态
@@ -511,12 +513,12 @@ def get_assets_c2c(token):
 
 def query_invitation_get_stats(token):
     #我的邀请信息
-    url = "%s/api/v1/partner/query_invitation_get_stats" % B2_url
-    params = {
+    url = "%s/api/v1/partner/query_invitation_get_stats" % B3_url
+    body = {
         "token":token
     }
-    run = RunMain(url=url, params=None, data=params,
-                  headers=get_signture(H5_apikey,H5_apisecret,params), method='POST')
+    run = RunMain(url=url, params=None, data=body,
+                  headers=get_signture(H5_apikey,H5_apisecret,body), method='POST')
     out_log(url, response_msg=json.loads(run.response))
     if json.loads(run.response)["code"] == 1000:
         print(json.loads(run.response))
@@ -526,12 +528,12 @@ def query_invitation_get_stats(token):
 
 def query_identity_byToken(token):
     #查询用户是否是荣誉合伙人
-    url = "%s/api/v1/partner/query_identity_byToken" % B2_url
-    params = {
+    url = "%s/api/v1/partner/query_identity_byToken" % B3_url
+    body = {
         "token":token
     }
-    run = RunMain(url=url, params=None, data=params,
-                  headers=get_signture(H5_apikey,H5_apisecret,params), method='POST')
+    run = RunMain(url=url, params=None, data=body,
+                  headers=get_signture(H5_apikey,H5_apisecret,body), method='POST')
     out_log(url, response_msg=json.loads(run.response))
     if json.loads(run.response)["code"] == 1000:
         print(json.loads(run.response))
@@ -540,7 +542,7 @@ def query_identity_byToken(token):
 
 def get_otc_config():
     # 获取C2C交易配置参数
-    url = "%s/api/v1/parameter/get_otc_config" % B2_url
+    url = "%s/api/v1/parameter/get_otc_config" % B3_url
     run = RunMain(url=url, params=None, data=None,
                   headers=get_signture(H5_apikey, H5_apisecret), method='GET')
     out_log(url, response_msg=json.loads(run.response))

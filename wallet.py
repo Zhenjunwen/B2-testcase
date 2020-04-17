@@ -15,10 +15,14 @@ B2_url = "http://api.b2dev.xyz" #B2dev
 token_junxin = "80fe2d99db7b256063b80874fedc05cf"  # 俊鑫token
 token_wen = "b41a6ec802efad9856b5862b13a2fbbd"  # 俊文token
 # sys_token = "2da373f6d5ffc1f6a42120eb5a893adb" #B2后台token
-H5_apikey = "alLzET7dFLYN5ONg"
-H5_apisecret = "rpoEwZeM"
-sys_apikey = "4NHMhvsQ15TFNyVO"
-sys_apisecret = "h8eiT26J"
+H5_apikey = "sUY7qsoHudTrw2Ct"
+H5_apisecret = "gEq76SZv"
+sys_apikey = "5S7NukaMpMVW8U4Z"
+sys_apisecret = "p0fbgZI0"
+Android_apikey = "qbmkIS55ptjBhZFp"
+Android_apisecret = "7M1H4mXA"
+IOS_apikey = "oStkKLmJ5Q8S4n3b"
+IOS_apisecret = "gKByU6HC"
 sys_token = "01f9936ad43a673e517dd4712c9b38e9"#B2dev
 
 def get_address(token,symbol,chain_id):

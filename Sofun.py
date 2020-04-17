@@ -15,10 +15,14 @@ B2_url = "http://api.b2dev.xyz" #B2dev
 token_junxin = "6a1ad8eba28ec8c8107f25482c02ce2a"  # 俊鑫token
 token_wen = "0b88d5881bc7f12dcf76d734a6246b59"  # 俊文token
 # sys_token = "2da373f6d5ffc1f6a42120eb5a893adb" #B2后台token
-H5_apikey = "alLzET7dFLYN5ONg"
-H5_apisecret = "rpoEwZeM"
-sys_apikey = "4NHMhvsQ15TFNyVO"
-sys_apisecret = "h8eiT26J"
+H5_apikey = "sUY7qsoHudTrw2Ct"
+H5_apisecret = "gEq76SZv"
+sys_apikey = "5S7NukaMpMVW8U4Z"
+sys_apisecret = "p0fbgZI0"
+Android_apikey = "qbmkIS55ptjBhZFp"
+Android_apisecret = "7M1H4mXA"
+IOS_apikey = "oStkKLmJ5Q8S4n3b"
+IOS_apisecret = "gKByU6HC"
 sys_token = "48edd9862203d1e7e1e26eb510967846"#后台
 
 def miner_basic(token):

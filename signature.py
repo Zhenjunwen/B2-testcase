@@ -20,18 +20,20 @@ def get_signture(apikey,apisecret,playload=""):
     param = param[:-1]
 
     keyUrlString = urllib.parse.quote(param).upper()
-    sig_str = keyUrlString + apisecret + 'BTCSOEX'
+    sig_str = keyUrlString + apisecret + 'B3EX'
     signature = str(hashlib.sha256(sig_str.encode('utf-8')).hexdigest()).upper()
     UA = ""
-    if dic["apikey"] == "alLzET7dFLYN5ONg":
+    if dic["apikey"] == "sUY7qsoHudTrw2Ct":
         UA = "H5"
-    elif dic["apikey"] == "ctyD04PtGMIsJtNZ":
+    elif dic["apikey"] == "qbmkIS55ptjBhZFp":
         UA = "ARD"
+    elif dic["apikey"] == "oStkKLmJ5Q8S4n3b":
+        UA = "IOS"
     else:
         UA = "AM"
 
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36;BTCSO %s"%UA,
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36;B3 %s"%UA,
         "Content-Type": "application/x-www-form-urlencoded",
         "apikey": dic["apikey"],
         "timestamp": str(int(round(t * 1000))),
