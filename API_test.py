@@ -4,6 +4,7 @@ import datetime
 import urllib
 import hashlib
 import time
+import demjson
 
 class RunMain:
     def __init__(self,url,params,data,headers,method):
@@ -15,7 +16,7 @@ class RunMain:
 
     def send_get(self,url,params,headers):
         response = requests.get(url=url,params=params,headers=headers).json()
-        return json.dumps(response,sort_keys=True,indent=4)
+        return json.dumps(response, sort_keys=True, indent=4)
 
     def run_main(self,url,params,data,headers,method):
         respose = None

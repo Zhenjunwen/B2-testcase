@@ -12,11 +12,11 @@ import traceback
 
 # B2_url = "http://192.168.0.22:12024" #孙骞
 B3_url = "https://api.b3dev.xyz" #B3dev
-# B2_url = "http://api.b2dev.xyz" #B2dev
+B2_url = "http://api.b2dev.xyz" #B2dev
 # B2_url = "http://api.b2sit.xyz" #B2sit
 # B2_url = "http://api.b2sim.xyz" #B2sim
 token_junxin = "17d740ce53869ceb3dce06e943e88488"  # 俊鑫token
-token_wen = "942e0f834af162d12b63d3f3dde97326"  # 俊文token
+token_wen = "08cf9ab4a68819bddb381da4cdc311eb"  # 俊文token
 sys_token = "2da373f6d5ffc1f6a42120eb5a893adb" #B2后台token
 H5_apikey = "sUY7qsoHudTrw2Ct"
 H5_apisecret = "gEq76SZv"
@@ -41,9 +41,10 @@ def send_sms(sms_type,account,dialing_code="86",token="",language="zh"):
                   headers=get_signture(Android_apikey,Android_apisecret,body), method='POST')
     out_log(url,body,json.loads(run.response))
     code = json.loads(run.response)["code"]
+    # print(json.loads(run.response))
     if code == 1000:
         verification_id = json.loads(run.response)["data"]["verification_id"]
-        # print(verification_id)
+        print(verification_id)
         return verification_id
     elif code == 2994:
         wait_time = json.loads(run.response)["data"]["wait_time"]
@@ -54,14 +55,14 @@ def send_sms(sms_type,account,dialing_code="86",token="",language="zh"):
 def register(account,password,verification_id,type="1",dialing_code="86",invitation_code="",platform="2"):
     #注册
     url = "%s/api/v1/user/register" % B3_url
+    db = DB('mysql.b3dev.xyz', 3306, 'b3_api', 'fGFcqRkHC5D2z^b^', 'b3')  # B3devDB
     # db = DB('192.168.0.120', 3306, 'tars2', '#k6tYIA4KrYfFU0y', 'biso') #内网DB
     # db = DB('mysql.b2dev.xyz', 3306, 'b2_cc', 'EV0Yom7L5l4r', 'biso') #devDB
-    db = DB('mysql.b3dev.xyz', 3306, 'b3_api', 'fGFcqRkHC5D2z^b^', 'b3')  # B3devDB
     # db = DB('mysql.b2sit.xyz', 3306, 'b2_cc', '7iD5uXtW84tG', 'biso') #sitDB
     # db = DB('mysql.b2sim.xyz', 3306, 'b2_cc', '30iAc2sF8UZa', 'biso') #simDB
     verification_code = db.query("SELECT verification_code FROM `user_verification_code` WHERE user_account = 86%s ORDER BY code_over_time DESC LIMIT 1"%account)[0][0]
     # print(verification_code)
-    password = str(hashlib.sha256((password+"B3EXSS").encode('utf-8')).hexdigest()).upper()
+    password = str(hashlib.sha256(password.encode('utf-8')).hexdigest())
     body = {
         "account":account,
         "password":password,
@@ -75,6 +76,7 @@ def register(account,password,verification_id,type="1",dialing_code="86",invitat
     run = RunMain(url=url, params=None, data=body,
                   headers=get_signture(Android_apikey,Android_apisecret, body), method='POST')
     out_log(url,body,json.loads(run.response))
+    print(password)
     code = json.loads(run.response)["code"]
     if code == 1000:
         token = json.loads(run.response)["data"]["token"]
@@ -84,8 +86,7 @@ def register(account,password,verification_id,type="1",dialing_code="86",invitat
 
 def login_step1(account,password,type="1",dialing_code="86"):
     url = "%s/api/v1/user/login/step1" % B3_url
-
-    password = str(hashlib.sha256((password+"B3EXSS").encode('utf-8')).hexdigest()).upper()
+    password = str(hashlib.sha256(password.encode('utf-8')).hexdigest())
     body = {
         "type":type, #账号类型，1=手机号码 2=邮箱地址
         "dialing_code":dialing_code, #国际电话区号，仅当type=1 时有效
@@ -95,12 +96,13 @@ def login_step1(account,password,type="1",dialing_code="86"):
     run = RunMain(url=url, params=None, data=body,
                   headers=get_signture(Android_apikey, Android_apisecret, body), method='POST')
     out_log(url,body,json.loads(run.response))
+    print(password)
     code = json.loads(run.response)["code"]
     if code == 1000:
         verification_token = json.loads(run.response)["data"]["verification_token"]
         return verification_token
     else:
-        print(run.response)
+        print(json.loads(run.response))
 
 def login_step2(verification_token,verification_id,account,platform="2",dialing_code="86"):
     url = "%s/api/v1/user/login/step2" % B3_url
@@ -139,13 +141,40 @@ def user_register(sms_type,account,password):
     token = register(account=account, password=password, verification_id=verification_id, type="1", dialing_code="86", invitation_code="", platform="2") # SIM邀请码：cKDFHU94，sit：gROQOZ4D dev:7g2VRxQ6
     return token
 
+
+
 def validate_login_pwd(token,password):
     #验证登录密码是否正确
     url = "%s/api/v1/user/validate_login_pwd" % B3_url
-    password = str(hashlib.sha256((password + "B3EXSS").encode('utf-8')).hexdigest()).upper()
+    password = str(hashlib.sha256(password.encode('utf-8')).hexdigest())
     body={
         "token":token,
         "password":password
+    }
+    run = RunMain(url=url, params=None, data=body,
+                  headers=get_signture(H5_apikey, H5_apisecret, body), method='POST')
+    out_log(url,send_msg=body,response_msg=json.loads(run.response))
+    print(password)
+    print(json.loads(run.response))
+
+def modify_login_pwd(token,password,account):
+    #修改登录密码
+    url = "%s/api/v1/user/modify_login_pwd" % B3_url
+    db = DB('mysql.b3dev.xyz', 3306, 'b3_api', 'fGFcqRkHC5D2z^b^', 'b3')  # B3devDB
+    # db = DB('192.168.0.120', 3306, 'tars2', '#k6tYIA4KrYfFU0y', 'biso') #内网DB
+    # db = DB('mysql.b2dev.xyz', 3306, 'b2_cc', 'EV0Yom7L5l4r', 'biso') #devDB
+    # db = DB('mysql.b2sit.xyz', 3306, 'b2_cc', '7iD5uXtW84tG', 'biso') #sitDB
+    # db = DB('mysql.b2sim.xyz', 3306, 'b2_cc', '30iAc2sF8UZa', 'biso') #simDB
+    verification_id = send_sms(sms_type="4", account=account, dialing_code="86", token=token, language="zh")
+    verification_code = db.query(
+        "SELECT verification_code FROM `user_verification_code` WHERE user_account = 86%s ORDER BY code_over_time DESC LIMIT 1" % account)[0][0]
+    print(verification_code)
+    password = str(hashlib.sha256(password.encode('utf-8')).hexdigest()).upper()
+    body={
+        "token":token,
+        "password":password,
+        "verification_code":verification_code,
+        "verification_id":verification_id
     }
     run = RunMain(url=url, params=None, data=body,
                   headers=get_signture(H5_apikey, H5_apisecret, body), method='POST')
@@ -163,6 +192,9 @@ if __name__ == "__main__":
         # token = login_step2(verification_token,verification_id,"15521057551")
         # print(token)
         # print(user_login("2","13826284310","111111"))
-        print(user_login("2", "15521057551", "zjw971006"))
+        # print(user_login("2", "15916750662", "123456")) #永健账号
+        # print(user_login("2", "15521057551", "zjw971006"))
+        validate_login_pwd(token=token_wen, password="zjw971006")
+        modify_login_pwd(token=token_wen, password="zjw971006", account="15521057551")
     except Exception:
         print(traceback.print_exc(file=open(r'logs\err.log','w+')))

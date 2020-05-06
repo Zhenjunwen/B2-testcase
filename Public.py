@@ -101,6 +101,7 @@ def announcement_get_list(page_number,page_size,platform,language=None):
     out_log(url,response_msg=json.loads(run.response))
     print(json.loads(run.response))
 
+
 if __name__ == "__main__":
     announcement_get_list(page_number="1", page_size="5", platform="1", language="zh")
 
