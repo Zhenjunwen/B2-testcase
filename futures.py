@@ -1,44 +1,47 @@
 # coding=utf-8
-import traceback
+
 import json
-import requests
 from API_test import RunMain
-import time
 from log import out_log
-from login_register import user_login
 from signature import get_signture
 import demjson
+import configparser
+cf = configparser.ConfigParser()
+#配置文件路径
+cf.read("F:\mohu-test\config.cfg")
+B3_url = cf.get("url","url")
+token_wen = cf.get('token','token_wen')
+token_junxin = cf.get('token','token_junxin')
+token_guoliang=cf.get('token',"token_guoliang")
+H5_apikey =cf.get("Apikey","H5_apikey")
+H5_apisecret =cf.get("Apikey","H5_apisecret")
+sys_apikey =cf.get("Apikey","sys_apikey")
+sys_apisecret =cf.get("Apikey","sys_apisecret")
+Android_apikey =cf.get("Apikey","Android_apikey")
+Android_apisecret =cf.get("Apikey","Android_apisecret")
+IOS_apikey =cf.get("Apikey","IOS_apikey")
+IOS_apisecret =cf.get("Apikey","IOS_apisecret")
 
-
-# B3_url = "http://192.168.0.22:12024" #孙骞
-B3_url = "https://api.b3dev.xyz" #B3dev
-# B3_url = "http://api.B3sit.xyz" #B3sit
-# B3_url = "http://api.B3sim.xyz" #B3sim
-token_junxin = "f59d910a722302fe3b0b6a0542351cce"  # 俊鑫token
-token_wen = "08cf9ab4a68819bddb381da4cdc311eb"  # 俊文token
-token_guoliang = "bc3200619901095b749e2c49adff5f5e" #国亮token
-H5_apikey = "sUY7qsoHudTrw2Ct"
-H5_apisecret = "gEq76SZv"
-sys_apikey = "5S7NukaMpMVW8U4Z"
-sys_apisecret = "p0fbgZI0"
-Android_apikey = "qbmkIS55ptjBhZFp"
-Android_apisecret = "7M1H4mXA"
-IOS_apikey = "oStkKLmJ5Q8S4n3b"
-IOS_apisecret = "gKByU6HC"
 
 #公共分类
-def futures_common_get_contracts():
+def futures_common_get_contracts(symbol=""):
     #期货合约-3270-获取当前生效的合约
     url = "%s/api/v1/futures/common/contracts" % B3_url
-    run = RunMain(url=url, params=None, data=None,
+    params = {
+        "symbol":symbol
+    }
+    run = RunMain(url=url, params=params, data=None,
                   headers=get_signture(H5_apikey, H5_apisecret), method='GET')
     out_log(url,response_msg=json.loads(run.response))
     print(json.loads(run.response))
 
-def futures_get_adjust_factor():
+def futures_get_adjust_factor(symbol=""):
     #期货合约-3306-获取平台阶梯调整系数
     url = "%s/api/v1/futures/common/adjust_factor" % B3_url
-    run = RunMain(url=url, params=None, data=None,
+    params = {
+        "symbol":symbol
+    }
+    run = RunMain(url=url, params=params, data=None,
                   headers=get_signture(H5_apikey, H5_apisecret), method='GET')
     out_log(url,response_msg=json.loads(run.response))
     print(json.loads(run.response))
@@ -54,10 +57,13 @@ def futures_contract_price_limit(contract_code):
     out_log(url,response_msg=json.loads(run.response))
     print(json.loads(run.response))
 
-def futures_common_effective_contracts():
+def futures_common_effective_contracts(symbol=""):
     #3630-期货合约-获取平台生效的合约
     url = "%s/api/v1/futures/common/effective_contracts" % B3_url
-    run = RunMain(url=url, params=None, data=None,
+    params = {
+        "symbol": symbol
+    }
+    run = RunMain(url=url, params=params, data=None,
                   headers=get_signture(H5_apikey, H5_apisecret), method='GET')
     out_log(url,response_msg=json.loads(run.response))
     print(json.loads(run.response))
@@ -126,7 +132,7 @@ def futures_add_order(token,contract_code,direction,quantity,price,lever,source)
         "source":source                 #订单来源，取值范围：app | web
     }
     run = RunMain(url=url, params=None, data=body,
-                  headers=get_signture(H5_apikey, H5_apisecret, body), method='POST')
+                  headers=get_signture(Android_apikey, Android_apisecret, body), method='POST')
     out_log(url,send_msg=body,response_msg=json.loads(run.response))
     if json.loads(run.response)["code"] == 1000:
         order_id = json.loads(run.response)["data"]["order_id"]
@@ -151,7 +157,7 @@ def futures_order_cancel(token,order_id):
     out_log(url,send_msg=body,response_msg=json.loads(run.response))
     print(json.loads(run.response))
 
-def futures_open_orders(token,page_number,page_size,symbol=None,contract_code=None):
+def futures_open_orders(token,page_number,page_size,symbol="",contract_code=""):
     #3369-获取当前委托
     url = "%s/api/v1/futures/order/open_orders" % B3_url
     body={
@@ -166,7 +172,7 @@ def futures_open_orders(token,page_number,page_size,symbol=None,contract_code=No
     out_log(url,send_msg=body,response_msg=json.loads(run.response))
     print(json.loads(run.response))
 
-def futures_close_orders(token,page_number,page_size,state,contract_code=None,symbol=None):
+def futures_close_orders(token,page_number,page_size,state=None,contract_code=None,symbol=None):
     #3378-获取历史委托
     url = "%s/api/v1/futures/order/close_orders" % B3_url
     body={
@@ -268,6 +274,56 @@ def futures_batch_cancel(token,order_ids):
     out_log(url,response_msg=json.loads(run.response))
     print(demjson.decode(run.response))
 
+def futures_financial_records(token,symbol,page_number,page_size,start_date,type=""):
+    #3648-获取用户财务记录
+    url = "%s/api/v1/futures/account/financial_records" % B3_url
+    body = {
+        "token":token,
+        "symbol":symbol,
+        "page_number":page_number,
+        "page_size":page_size,
+        "type":type,                #记录类型，取值范围：转入 | 转出 | 开仓 | 平仓 | 手续费 | 强平，不传或传空字符串则默认为全部
+        "start_date":start_date     #查询起始天数，取值范围：[1, 90]
+    }
+    run = RunMain(url=url, params=None, data=body,
+                  headers=get_signture(H5_apikey, H5_apisecret,body), method='POST')
+    out_log(url,response_msg=json.loads(run.response))
+    print(demjson.decode(run.response))
+
+def futures_history_trades(token,page_number,page_size,start_date,contract_code="",direction="",symbol=""):
+    #3783-获取历史成交记录
+    url = "%s/api/v1/futures/order/history_trades" % B3_url
+    body = {
+        "token":token,
+        "symbol":symbol,
+        "contract_code":contract_code,
+        "direction":direction,
+        "page_number":page_number,
+        "page_size":page_size,
+        "start_date":start_date     #查询起始天数，取值范围：[1, 90]
+    }
+    run = RunMain(url=url, params=None, data=body,
+                  headers=get_signture(H5_apikey, H5_apisecret,body), method='POST')
+    out_log(url,response_msg=json.loads(run.response))
+    print(demjson.decode(run.response))
+
+def futures_liquidation_orders(token,page_number,page_size,start_date="",contract_code="",direction="",symbol=""):
+    #3783-获取历史成交记录
+    url = "%s/api/v1/futures/order/liquidation_orders" % B3_url
+    body = {
+        "token":token,
+        "symbol":symbol,
+        "contract_code":contract_code,
+        "direction":direction,          #交易方向，取值范围：buy_close=买入强平 sell_close=卖出强平，不传或传空字符创则默认为以上全部
+        "page_number":page_number,
+        "page_size":page_size,
+        "start_date":start_date         #查询起始天数，取值范围：[1, 90]
+    }
+    run = RunMain(url=url, params=None, data=body,
+                  headers=get_signture(H5_apikey, H5_apisecret,body), method='POST')
+    out_log(url,response_msg=json.loads(run.response))
+    print(demjson.decode(run.response))
+
 #期货合约行情
 def futures_index_price(symbol):
     #获取指数价格
@@ -305,12 +361,12 @@ def futures_market_depth_merged(contract_code,precision):
     print(json.loads(run.response))
     return json.loads(run.response)
 
-def futures_market_history_kline(contract_code,period,size):
+def futures_market_history_kline(kline_symbol,period,size):
     #获取市场K线数据
     url = "%s/api/v1/futures/market/history/kline" % B3_url
     body = {
-        "contract_code":contract_code,  #合约代码
-        "period":period,                #时间粒度，0= 1分钟；1= 5分钟；2= 15分钟；3= 30分钟；4= 60分钟；5：1天
+        "kline_symbol":kline_symbol,    #【更新】合约K线名称，基本格式：合约品种_合约类型，其中合约类型取值范围如下：1=当周 2=次周 3=季度 4=次季度
+        "period":period,                #【更新】时间粒度，取值范围：0= 1分钟；1= 5分钟；2= 15分钟；3= 30分钟；4= 60分钟；5=1天；6=1周；7=1月
         "size":size                     #要获取的数据条数，最大值：1500
     }
     run = RunMain(url=url, params=body, data=None,
@@ -367,7 +423,7 @@ def futures_position_limit(token,symbol=None,contract_type=None):
     out_log(url,response_msg=json.loads(run.response))
     print(demjson.decode(run.response))
 
-def futures_liquidation_orders(symbol,trade_type,create_date,page_number=None,page_size=None):
+def futures_liquidation_orders(symbol,trade_type,create_date,page_number="",page_size=""):
     #获取平台强平订单
     url = "%s/v2/futures/market/liquidation_orders" % B3_url
     body = {
@@ -430,19 +486,96 @@ def futures_contract_his_open_interest(symbol,period):
     out_log(url,response_msg=json.loads(run.response))
     print(json.loads(run.response))
 
+#代理商接口
+def employee_apply(token,agent_user_id):
+    #3657-提交代理商员工申请
+    url = "%s/api/v1/futures/agent/employee/apply" % B3_url
+    body = {
+        "token":token,
+        "agent_user_id":agent_user_id     #代理商UID
+    }
+    run = RunMain(url=url, params=None, data=body,
+                  headers=get_signture(H5_apikey, H5_apisecret,body), method='POST')
+    out_log(url,response_msg=json.loads(run.response))
+    print(json.loads(run.response))
+
+def employee_details(token):
+    #3666-获取代理商员工申请信息
+    url = "%s/api/v1/futures/agent/employee/details" % B3_url
+    body = {
+        "token":token,
+    }
+    run = RunMain(url=url, params=None, data=body,
+                  headers=get_signture(H5_apikey, H5_apisecret,body), method='POST')
+    out_log(url,response_msg=json.loads(run.response))
+    print(json.loads(run.response))
+
+def employee_stats(token):
+    #3666-获取代理商员工邀请统计信息
+    url = "%s/api/v1/futures/agent/employee/stats" % B3_url
+    body = {
+        "token":token,
+    }
+    run = RunMain(url=url, params=None, data=body,
+                  headers=get_signture(H5_apikey, H5_apisecret,body), method='POST')
+    out_log(url,response_msg=json.loads(run.response))
+    print(json.loads(run.response))
+
+def employee_role_info(token):
+    #3711-获取当前用户的代理商或员工角色信息
+    url = "%s/api/v1/futures/agent/role_info" % B3_url
+    body = {
+        "token":token,
+    }
+    run = RunMain(url=url, params=None, data=body,
+                  headers=get_signture(H5_apikey, H5_apisecret,body), method='POST')
+    out_log(url,response_msg=json.loads(run.response))
+    print(json.loads(run.response))
+
+#邀请
+def invitation_my_stats(token):
+    #3756-获取我的邀请统计信息
+    url = "%s/api/v1/invitation/my_stats" % B3_url
+    body = {
+        "token":token,
+    }
+    run = RunMain(url=url, params=None, data=body,
+                  headers=get_signture(H5_apikey, H5_apisecret,body), method='POST')
+    out_log(url,response_msg=json.loads(run.response))
+    print(json.loads(run.response))
+
+def invitation_my_records(token,page_number,page_size):
+    #3765-获取我的邀请记录
+    url = "%s/api/v1/invitation/my_records" % B3_url
+    body = {
+        "token":token,
+        "page_number":page_number,
+        "page_size":page_size,
+    }
+    run = RunMain(url=url, params=None, data=body,
+                  headers=get_signture(H5_apikey, H5_apisecret,body), method='POST')
+    out_log(url,response_msg=json.loads(run.response))
+    print(json.loads(run.response))
+
 if __name__ == "__main__":
+    #获取用户财务记录
+    # futures_financial_records(token=token_wen, symbol="BTC", page_number="1", page_size="10", start_date="90", type=None)
+
     # 获取平台合约信息
     # futures_common_get_contracts()
     # 获取平台生效的合约(简易版)
-    # futures_common_effective_contracts()
+    # futures_common_effective_contracts(symbol="")
 
     #获取平台阶梯调整系数
-    # futures_get_adjust_factor()
+    # futures_get_adjust_factor(symbol="")
 
     #获取合约最高最低限价
-    # futures_contract_price_limit(contract_code="BTC_20200501")
+    # futures_contract_price_limit(contract_code="BTC_20200522")
 
-    #获取用户账户及持仓信息
+    #获取用户手续费费率
+    # futures_get_fee_rate(token=token_wen, symbol=None)
+
+    # 获取用户账户及持仓信息
     futures_account_position_info(token=token_wen, symbol="BTC")
     # position_unsettled = a["data"]["positions"][0]["position_unsettled"]
     # position_settled = a["data"]["positions"][0]["position_settled"]
@@ -461,50 +594,59 @@ if __name__ == "__main__":
     # else:
     #     print(avg_price_hold)
 
-    #合约下单 0.卖平 1.卖开 16.买平 17.买开
-    # futures_add_order(token=token_junxin,contract_code="BTC_20200501",direction="buy_close",quantity="7",price="9187.12",lever="10",source="web")
-    # futures_add_order(token=token_wen,contract_code="BTC_20200501",direction="sell_close",quantity="62",price="9110.12",lever="10",source="web")
+    # 合约下单 0.卖平 1.卖开 16.买平 17.买开
+    # futures_add_order(token=token_junxin,contract_code="BTC_20200626",direction="sell_open",quantity="10",price="0",lever="20",source="web")
+    # futures_add_order(token="c746bf088dd5bb270ab34cb172bf95a3",contract_code="BTC_20200626",direction="buy_open",quantity="100",price="9350.55",lever="20",source="web")
 
     #获取当前委托
-    # futures_open_orders(token=token_wen,page_number="1", page_size="10")
+    # futures_open_orders(token=token_junxin,page_number="1", page_size="10")
+
+    #获取委托成交明细
+    # futures_trade_detail(token=token_wen, order_id="6904344")
 
     #获取历史委托
-    # futures_close_orders(token=token_guoliang, page_number="1", page_size="50", state="partial_canceled", contract_code="BTC_20200925")
+    # futures_close_orders(token=token_wen, page_number="1", page_size="50")
 
     #获取委托详情
-    # futures_order_detail(token=token_guoliang, order_id="3654700")
+    # futures_order_detail(token=token_wen, order_id="4441293")
 
     #单号撤单
-    # futures_order_cancel(token=token_wen, order_id="3696778")
+    # futures_order_cancel(token=token_wen, order_id="7181117")
 
     #批量撤单
     #撤销指定合约品种的全部订单
-    # futures_cancel_by_symbol(token=token_wen, symbol="BTC")
+    # futures_cancel_by_symbol(token=token_junxin, symbol="BTC")
     #撤销指定合约代码的全部订单
-    # futures_cancel_by_contract_code(token=token_wen, contract_code="BTC_20200501")
+    # futures_cancel_by_contract_code(token=token_junxin, contract_code="BTC_20200626")
     #批量撤销单号订单
     # futures_batch_cancel(token=token_wen, order_ids="115626")
 
-    #获取深度数据
-    # futures_market_depth(contract_code="BTC_20200501")
+    #获取历史成交记录
+    # futures_history_trades(token=token_wen, page_number="1", page_size="50", start_date="90", contract_code="BTC_20200626", direction="", symbol="")
+
+    # 获取深度数据
+    # futures_market_depth(contract_code="BTC_20200515")
 
     #账户资金划转 0=划转至币币账户 1=划转至合约账户
-    # futures_transfer_fund(token="99bfe311791e9af2df58fe873484022c", symbol="BTC", amount="0.5", side="1")
+    # futures_transfer_fund(token="c746bf088dd5bb270ab34cb172bf95a3", symbol="BTC", amount="1", side="1")
 
     # 获取市场最新成交涨跌数据
-    #  futures_market_last_trade(contract_code="BTC_20200501")
+    # futures_market_last_trade(contract_code="BTC_20200515")
+
+    #获取市场近期成交记录
+    # futures_market_history_trade(contract_code="BTC_20200515", size="50")
 
     # 获取市场K线数据
-    # futures_market_history_kline(contract_code="BTC_20200925", period="1", size="100")
+    # futures_market_history_kline(kline_symbol="BTC_1", period="7", size="100")
 
     #获取指数价
-    # futures_index_price(symbol="ETH")
+    # futures_index_price(symbol="BTC")
 
     #获取用户下单量限制
     # futures_position_limit(token=token_wen)
 
     #获取平台强平订单
-    # futures_liquidation_orders(symbol="BTC", trade_type=1, create_date=7,page_number=None, page_size=None)
+    # futures_liquidation_orders(symbol="BTC", trade_type="1", create_date="90",page_number="1", page_size="30")
 
     #获取平台交割结算记录
     # futures_settlement_history(symbol="BTC", page_number=None, page_size=None)
@@ -513,4 +655,25 @@ if __name__ == "__main__":
     # futures_risk_reserve_info(symbol="BTC")
 
     #平台持仓量查询
-    # futures_contract_his_open_interest(symbol="BTC", period="60min")
+    # futures_contract_his_open_interest(symbol="BTC", period="12hour")
+
+    #获取用户财务记录
+    # futures_financial_records(token=token_wen, symbol="BTC", page_number="1", page_size="50", start_date="90", type="平仓")
+
+    #提交代理商员工申请
+    # employee_apply(token="8df38c3fb600de9e66e98dcb57eb8eec", agent_user_id="126345")
+
+    #获取代理商员工申请信息
+    # employee_details(token=token_wen)
+
+    #获取代理商员工邀请统计信息
+    # employee_stats(token="28ab0e2af741408635f15f5c0eda649c")
+
+    #获取当前用户的代理商或员工角色信息
+    # employee_role_info(token=token_wen)
+
+    #获取我的邀请统计信息
+    # invitation_my_stats(token=token_wen)
+
+    #获取我的邀请记录
+    # invitation_my_records(token=token_wen, page_number="1", page_size="10")

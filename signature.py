@@ -21,6 +21,7 @@ def get_signture(apikey,apisecret,playload=""):
 
     keyUrlString = urllib.parse.quote(param).upper()
     sig_str = keyUrlString + apisecret + 'B3EX'
+    # print(sig_str)
     signature = str(hashlib.sha256(sig_str.encode('utf-8')).hexdigest()).upper()
     UA = ""
     if dic["apikey"] == "sUY7qsoHudTrw2Ct":

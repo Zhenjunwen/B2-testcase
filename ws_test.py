@@ -90,8 +90,8 @@ def Depth():
 def connect_test(thread_name):
     ws = create_connection("ws://192.168.0.149:2200/ws")
 
-    data_type = 10
-    contract = ['BTC_20200501']
+    data_type = 8
+    contract = ['BTC_1']
     #  symbol = []
     precision = -2  # 价格聚合精度，-2=2位小数，-1=1位小数，0=1位整数，1=2位整数... 以此类推
     m = {
@@ -119,13 +119,33 @@ def connect_test(thread_name):
         except:
             return
 
+def exchange_rate_test(thread_name):
+    ws = create_connection("ws://192.168.0.149:2100/ws/price")
+    m = {
+        'Action':1,
+        'Symbol':['BTC'],
+    }
+    trade_str = json.dumps(m)
+    ws.send(trade_str)
+    print("request: {}".format(trade_str))
+    while True:
+        try:
+            result = ws.recv()
+            print("{}: {}".format(thread_name, result))
+            if result.find("ping") != -1:
+                pong_time = result[9:len(result) - 1]
+                pong = '{' + '"pong":   {0}'.format(pong_time) + '}'
+                ws.send(pong.encode())
+        except:
+            return
+
 
 def run(number_of_threads):
     n = number_of_threads
     ts = []
     for i in range(n):
         name = 'thread{}'.format(i)
-        t1 = threading.Thread(target=connect_test, args=(name,))
+        t1 = threading.Thread(target=exchange_rate_test, args=(name,))
         t1.start()
         ts.append(t1)
 

@@ -1,0 +1,10 @@
+import configparser
+cf = configparser.ConfigParser()
+#配置文件路径
+cf.read("F:\mohu-test\config.cfg")
+
+secs = cf.sections() #获取sections的配置
+# print(secs)
+
+token_wen = cf.get('token','token_wen')
+print(token_wen)

@@ -4,25 +4,25 @@ import json
 from API_test import RunMain
 import time
 from log import out_log
-from login_register import user_login
 from signature import get_signture
+import configparser
 
-# B3_url = "http://192.168.0.22:12024" #孙骞
-B3_url = "https://api.b3dev.xyz" #B3dev
-# B2_url = "http://api.b2dev.xyz" #B2dev
-# B2_url = "http://api.b2sit.xyz" #B2sit
-# B2_url = "http://api.b2sim.xyz" #B2sim
-token_junxin = "17d740ce53869ceb3dce06e943e88488"  # 俊鑫token
-token_wen = "7893e454c38358872bb9fbcbb78f965c"  # 俊文token
-sys_token = "2da373f6d5ffc1f6a42120eb5a893adb" #B2后台token
-H5_apikey = "sUY7qsoHudTrw2Ct"
-H5_apisecret = "gEq76SZv"
-sys_apikey = "5S7NukaMpMVW8U4Z"
-sys_apisecret = "p0fbgZI0"
-Android_apikey = "qbmkIS55ptjBhZFp"
-Android_apisecret = "7M1H4mXA"
-IOS_apikey = "oStkKLmJ5Q8S4n3b"
-IOS_apisecret = "gKByU6HC"
+cf = configparser.ConfigParser()
+#配置文件路径
+cf.read("F:\mohu-test\config.cfg")
+B3_url = cf.get("url","url")
+token_wen = cf.get('token','token_wen')
+token_junxin = cf.get('token','token_junxin')
+token_guoliang=cf.get('token',"token_guoliang")
+H5_apikey =cf.get("Apikey","H5_apikey")
+H5_apisecret =cf.get("Apikey","H5_apisecret")
+sys_apikey =cf.get("Apikey","sys_apikey")
+sys_apisecret =cf.get("Apikey","sys_apisecret")
+Android_apikey =cf.get("Apikey","Android_apikey")
+Android_apisecret =cf.get("Apikey","Android_apisecret")
+IOS_apikey =cf.get("Apikey","IOS_apikey")
+IOS_apisecret =cf.get("Apikey","IOS_apisecret")
+
 
 def get_tradePairs():
     # 获取交易对
@@ -56,7 +56,7 @@ def busines_payway_get_list(token_wen):
     out_log(url, response_msg=json.loads(run.response))
     if json.loads(run.response)["code"] == 1000:
         pay_detail = json.loads(run.response)["data"]
-        # print(pay_detail)
+        print(pay_detail)
         return pay_detail
     else:
         print(json.loads(run.response))
@@ -112,16 +112,16 @@ def sell_payway_detail(token_wen):
         print(json.loads(run.response))
 
 
-def add_order(price,quantity,side,min_trx_cash,pay_way,symbol):
+def add_order(token,price,quantity,side,min_trx_cash,pay_way,symbol):
     # 商户发布买入广告
     url = '%s/api/v1/otc/add_order'%B3_url
-    pay_detail = buy_payway_detail(token_wen)
+    pay_detail = buy_payway_detail(token)
     payway_detail = json.dumps(pay_detail)
     # print((buy_pay_detail))
     # print(pay_detail)
     # 发布广告的收付款详情
     body ={
-        "token": token_wen,# 文，商户
+        "token": token,# 文，商户
         "price": str(price),  #发布广告价格
         "quantity": str(format(quantity,".8f")),  #发布广告数量
         "side": side,  #买卖方向 0=卖出，1=买入
@@ -499,16 +499,10 @@ def get_assets_c2c(token):
     body = {
         "token": token,
     }
-    # print(parmas_get_assets_c2c)
     run = RunMain(url=url, params=None, data=body,
                   headers=get_signture(H5_apikey,H5_apisecret,body), method='POST')
     out_log(url, response_msg=json.loads(run.response))
-    if json.loads(run.response)["code"] == 1000:
-        state = json.loads(run.response)['data']['state']  # 获取状态
-        print("state=", state)
-        return state
-    else:
-        print(json.loads(run.response))
+    print(json.loads(run.response))
 
 
 def query_invitation_get_stats(token):
@@ -550,6 +544,20 @@ def get_otc_config():
         print(json.loads(run.response))
     else:
         print(json.loads(run.response))
+
+def otc_add_deposit(token,symbol,amount):
+    #1192-商户追加保证金
+    url = "%s/api/v1/otc/add_deposit" % B3_url
+    body={
+        "token":token,
+        "symbol":symbol,
+        "amount":amount
+    }
+    run = RunMain(url=url, params=None, data=body,
+                  headers=get_signture(H5_apikey, H5_apisecret, body), method='POST')
+    out_log(url,send_msg=body,response_msg=json.loads(run.response))
+    print(json.loads(run.response))
+
 
 def c2c_all(token_wen,token_junxin,sys_token,symbol,amount,price,quantity):
     # 发布买币广告
@@ -772,16 +780,17 @@ if __name__ == "__main__":
     try:
         # buy_payway_detail = buy_payway_detail()
         # sell_payway_detail = sell_payway_detail()
-        token_wen = "a9626dfba352851c02f419f4b813fb86"
-        token_junxin = "80fe2d99db7b256063b80874fedc05cf"
-        sys_token = "02f735fb9149a5e0a5d5e68cc75f371b"
-        c2c_all(token_wen, token_junxin, sys_token,symbol="BTC-CNY",amount=0.05,price=49000.12,quantity=0.5)
-        c2c_all(token_wen, token_junxin, sys_token, symbol="USDT-CNY", amount=10.12, price=7.12, quantity=10000)
+        # c2c_all(token_wen, token_junxin, sys_token,symbol="BTC-CNY",amount=0.05,price=49000.12,quantity=0.5)
+        # c2c_all(token_wen, token_junxin, sys_token, symbol="USDT-CNY", amount=10.12, price=7.12, quantity=10000)
         # get_orders(token_wen,state="0",pay_way="7",nationality="0",base_currency="USDT",quote_currency="CNY")
+        # busines_payway_get_list(token_wen)
+        # add_order(token="3177e3a2be78e127d04ecf4f29089c01",price=1, quantity=100, side="0", min_trx_cash="10", pay_way="2", symbol="USDT-CNY")
+        # otc_add_deposit(token=token_wen, symbol="USDT", amount="100")
+        get_assets_c2c(token=token_wen)
     except Exception:
         traceback.print_exc(file=open(r'logs\err.log','w+'))
 
     finally:
-        # pass
-        cancel_all_orders(token_wen) # 下架所有广告
+        pass
+        # cancel_all_orders(token_wen) # 下架所有广告
 

@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
-    <file url="file://$PROJECT_DIR$/logs/2020-04-13-log.log" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/logs/2020-04-15-log.log" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/logs/2020-04-16-log.log" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/logs/2020-04-18-log.log" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/logs/2020-04-22-log.log" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/logs/2020-04-23-log.log" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/logs/2020-04-24-log.log" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/logs/2020-04-25-log.log" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/logs/2020-04-26-log.log" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/logs/2020-04-28-log.log" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/logs/2020-04-30-log.log" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/logs/2020-05-07-log.log" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/logs/2020-05-08-log.log" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/logs/2020-05-09-log.log" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/logs/2020-05-12-log.log" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/logs/2020-05-13-log.log" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/logs/2020-05-14-log.log" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/logs/2020-05-18-log.log" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/logs/2020-05-19-log.log" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/logs/2020-05-20-log.log" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/logs/err.log" charset="GBK" />
   </component>
 </project>

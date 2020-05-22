@@ -5,19 +5,25 @@ import requests
 from API_test import RunMain
 import time
 from log import out_log
-from login_register import user_login
 from apikey_signature import get_signture
 
-# B3_url = "http://192.168.0.22:12024" #孙骞
-B3_url = "https://api.b3dev.xyz" #B3dev
-H5_apikey = "sUY7qsoHudTrw2Ct"
-H5_apisecret = "gEq76SZv"
-sys_apikey = "5S7NukaMpMVW8U4Z"
-sys_apisecret = "p0fbgZI0"
-Android_apikey = "qbmkIS55ptjBhZFp"
-Android_apisecret = "7M1H4mXA"
-IOS_apikey = "oStkKLmJ5Q8S4n3b"
-IOS_apisecret = "gKByU6HC"
+import configparser
+
+cf = configparser.ConfigParser()
+#配置文件路径
+cf.read("F:\mohu-test\config.cfg")
+B3_url = cf.get("url","url")
+token_wen = cf.get('token','token_wen')
+token_junxin = cf.get('token','token_junxin')
+token_guoliang=cf.get('token',"token_guoliang")
+H5_apikey =cf.get("Apikey","H5_apikey")
+H5_apisecret =cf.get("Apikey","H5_apisecret")
+sys_apikey =cf.get("Apikey","sys_apikey")
+sys_apisecret =cf.get("Apikey","sys_apisecret")
+Android_apikey =cf.get("Apikey","Android_apikey")
+Android_apisecret =cf.get("Apikey","Android_apisecret")
+IOS_apikey =cf.get("Apikey","IOS_apikey")
+IOS_apisecret =cf.get("Apikey","IOS_apisecret")
 
 def futures_common_get_contracts(apikey,apisecret,symbol,amount,side):
     #apikey用户资产划转

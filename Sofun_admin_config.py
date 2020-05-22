@@ -2,26 +2,25 @@
 
 import json
 from API_test import RunMain
-import time
-from B2_C2C_api import get_signture
-import hashlib
+from C2C_api import get_signture
+import configparser
 
+cf = configparser.ConfigParser()
+#配置文件路径
+cf.read("F:\mohu-test\config.cfg")
+B3_url = cf.get("url","url")
+token_wen = cf.get('token','token_wen')
+token_junxin = cf.get('token','token_junxin')
+token_guoliang=cf.get('token',"token_guoliang")
+H5_apikey =cf.get("Apikey","H5_apikey")
+H5_apisecret =cf.get("Apikey","H5_apisecret")
+sys_apikey =cf.get("Apikey","sys_apikey")
+sys_apisecret =cf.get("Apikey","sys_apisecret")
+Android_apikey =cf.get("Apikey","Android_apikey")
+Android_apisecret =cf.get("Apikey","Android_apisecret")
+IOS_apikey =cf.get("Apikey","IOS_apikey")
+IOS_apisecret =cf.get("Apikey","IOS_apisecret")
 
-sunqian_url = "http://192.168.0.22:12024" #孙骞
-# B2_url = "http://192.168.0.120:12024"  # B2内网网址
-B2_url = "http://api.b2dev.xyz" #B2dev
-token_junxin = "17d740ce53869ceb3dce06e943e88488"  # 俊鑫token
-token_wen = "7893e454c38358872bb9fbcbb78f965c"  # 俊文token
-# sys_token = "2da373f6d5ffc1f6a42120eb5a893adb" #B2后台token
-H5_apikey = "sUY7qsoHudTrw2Ct"
-H5_apisecret = "gEq76SZv"
-sys_apikey = "5S7NukaMpMVW8U4Z"
-sys_apisecret = "p0fbgZI0"
-Android_apikey = "qbmkIS55ptjBhZFp"
-Android_apisecret = "7M1H4mXA"
-IOS_apikey = "oStkKLmJ5Q8S4n3b"
-IOS_apisecret = "gKByU6HC"
-sys_token = "3758757c3f074ca1004b5bed561526c1"#B2dev
 
 def get_tradePair(token,symbol=""):
     #SoFun交易挖矿-获取挖矿交易对列表

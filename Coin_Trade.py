@@ -3,26 +3,26 @@
 import json
 from API_test import RunMain
 import time
-from B2_C2C_api import get_signture
+from C2C_api import get_signture
 from log import out_log
-from login_register import user_login
+import configparser
 
-# B2_url = "http://192.168.0.22:12024" #孙骞
-B3_url = "https://api.b3dev.xyz" #B3dev
-# B2_url = "http://api.b2sim.xyz" #B2sim
-B2_url = "http://api.b2dev.xyz" #B2dev
-# B2_url = "http://api.b2sit.xyz" #B2sit
-# token_junxin = user_login("2","13826284310","111111")  # 俊鑫token
-token_wen = "7893e454c38358872bb9fbcbb78f965c"  # 俊文token
-# sys_token = "2da373f6d5ffc1f6a42120eb5a893adb" #B2后台token
-H5_apikey = "sUY7qsoHudTrw2Ct"
-H5_apisecret = "gEq76SZv"
-sys_apikey = "5S7NukaMpMVW8U4Z"
-sys_apisecret = "p0fbgZI0"
-Android_apikey = "qbmkIS55ptjBhZFp"
-Android_apisecret = "7M1H4mXA"
-IOS_apikey = "oStkKLmJ5Q8S4n3b"
-IOS_apisecret = "gKByU6HC"
+cf = configparser.ConfigParser()
+#配置文件路径
+cf.read("F:\mohu-test\config.cfg")
+B3_url = cf.get("url","url")
+token_wen = cf.get('token','token_wen')
+token_junxin = cf.get('token','token_junxin')
+token_guoliang=cf.get('token',"token_guoliang")
+H5_apikey =cf.get("Apikey","H5_apikey")
+H5_apisecret =cf.get("Apikey","H5_apisecret")
+sys_apikey =cf.get("Apikey","sys_apikey")
+sys_apisecret =cf.get("Apikey","sys_apisecret")
+Android_apikey =cf.get("Apikey","Android_apikey")
+Android_apisecret =cf.get("Apikey","Android_apisecret")
+IOS_apikey =cf.get("Apikey","IOS_apikey")
+IOS_apisecret =cf.get("Apikey","IOS_apisecret")
+
 
 
 def top_trades():
@@ -44,7 +44,7 @@ def add_orders(token,price,quantity,side,source,symbol):
         "token":token,
         "price":str(price),
         "quantity":str(quantity),
-        "side":side,
+        "side":side,                #交易方向 0=卖出 1=买入
         "source":source,
         "symbol":symbol
 
@@ -118,10 +118,10 @@ def history_trade(symbol,size):
 if __name__ == "__main__":
     # cancel_all_orders("72bf0954d984fa25e250f83df1761803", "SOFUN-USDT")
     # top_trades()
-    add_orders("30d0514b553963855d5fa3b0e2347250",0,1.5,"0","web","BTC-USDT")
-    # add_orders("f2cc54246712804f5fe554e20bba0477",8745.26,0.1005,"1","web","BTC-USDT")
+    add_orders(token="f80dfb7a06668d567282da239609c73d",price=9753.12,quantity=0.01,side="1",source="web",symbol="BTC-USDT")
+    # add_orders(token="53f002f0241422f375d380ff2090a016",price=9745.26,quantity=0.1005,side="0",source="web",symbol="BTC-USDT")
     # add_orders("683973377ae5c92d3e1bbecc87beec2d",7238.41,0.1005+0.01,"0","web","BTC-USDT")
     # get_open_orders(token="683973377ae5c92d3e1bbecc87beec2d")
-    last_trade(symbol="BTC-USDT")
+    # last_trade(symbol="BTC-USDT")
     # market(symbol="BTC-USDT", precision="1")
     # history_trade("BTC-USDT","50")
