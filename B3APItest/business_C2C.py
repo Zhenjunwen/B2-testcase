@@ -1,7 +1,7 @@
 # coding=utf-8
 import json
-from API_test import RunMain
-from signature import get_signture
+from B3APItest.API_test import RunMain
+from B3APItest.signature import get_signture
 import configparser
 
 cf = configparser.ConfigParser()
@@ -95,10 +95,10 @@ def quit_validate(token):
     print(json.loads(run.response))
 
 if __name__ == "__main__":
-    get_info(token_wen)
-    # quit_validate(token_wen)
+    # get_info(token_wen)
+    quit_validate(token_wen)
     # apply(token="18b8cc4056311094a783080155177761", symbol="BTC", amount="0.3")
     # quit_validate(token_wen)
-    # add_deposit(token=sys_token, symbol="BTC", amount="0.12345678", user_id="125487")
+    # add_deposit(token=sys_token, symbol="BTC", amount="0.12345678", user_id="126378")
     # quit_business(token=token_wen)
     # reduce_deposit(token="5960f1eea9ba394863603b85a1aca851", symbol="BTC", amount="0.3", user_id="126319")

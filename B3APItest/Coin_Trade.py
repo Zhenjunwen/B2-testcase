@@ -1,9 +1,8 @@
 #coding=utf-8
 
 import json
-from API_test import RunMain
-import time
-from C2C_api import get_signture
+from B3APItest.API_test import RunMain
+from B3APItest.C2C_api import get_signture
 from log import out_log
 import configparser
 

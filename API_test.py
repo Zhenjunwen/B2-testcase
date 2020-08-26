@@ -1,21 +1,17 @@
 import requests
 import json
-import datetime
-import urllib
-import hashlib
-import time
-import demjson
+
 
 class RunMain:
-    def __init__(self,url,params,data,headers,method):
+    def __init__(self, url: object, params: object, data: object, headers: object, method: object) -> object:
         self.response = self.run_main(url,params,data,headers,method)
 
     def send_post(self,url,data,headers):
-        response = requests.post(url=url,data=data,headers=headers).json()
+        response = requests.post(url=url,data=data,headers=headers,verify=True).json()
         return json.dumps(response,sort_keys=True,indent=4)
 
     def send_get(self,url,params,headers):
-        response = requests.get(url=url,params=params,headers=headers).json()
+        response = requests.get(url=url,params=params,headers=headers,verify=True).json()
         return json.dumps(response, sort_keys=True, indent=4)
 
     def run_main(self,url,params,data,headers,method):

@@ -1,8 +1,8 @@
 # coding=utf-8
 import json
-from API_test import RunMain
+from B3APItest.API_test import RunMain
 from log import out_log
-from signature import get_signture
+from B3APItest.signature import get_signture
 import configparser
 
 cf = configparser.ConfigParser()

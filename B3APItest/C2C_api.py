@@ -4,24 +4,26 @@ import json
 from API_test import RunMain
 import time
 from log import out_log
-from signature import get_signture
+from B3APItest.signature import get_signture
 import configparser
+from TruncateDecimal import truncateDecimal
 
 cf = configparser.ConfigParser()
 #配置文件路径
-cf.read("F:\mohu-test\config.cfg")
-B3_url = cf.get("url","url")
-token_wen = cf.get('token','token_wen')
-token_junxin = cf.get('token','token_junxin')
-token_guoliang=cf.get('token',"token_guoliang")
-H5_apikey =cf.get("Apikey","H5_apikey")
-H5_apisecret =cf.get("Apikey","H5_apisecret")
-sys_apikey =cf.get("Apikey","sys_apikey")
-sys_apisecret =cf.get("Apikey","sys_apisecret")
-Android_apikey =cf.get("Apikey","Android_apikey")
-Android_apisecret =cf.get("Apikey","Android_apisecret")
-IOS_apikey =cf.get("Apikey","IOS_apikey")
-IOS_apisecret =cf.get("Apikey","IOS_apisecret")
+cf.read("F:\mohu-test\configfile\B3config.cfg")
+
+B3_url = cf.get("url", "url")
+token_wen = cf.get('token', 'token_wen')
+token_junxin = cf.get('token', 'token_junxin')
+token_guoliang = cf.get('token', "token_guoliang")
+H5_apikey = cf.get("Apikey", "H5_apikey")
+H5_apisecret = cf.get("Apikey", "H5_apisecret")
+sys_apikey = cf.get("Apikey", "sys_apikey")
+sys_apisecret = cf.get("Apikey", "sys_apisecret")
+Android_apikey = cf.get("Apikey", "Android_apikey")
+Android_apisecret = cf.get("Apikey", "Android_apisecret")
+IOS_apikey = cf.get("Apikey", "IOS_apikey")
+IOS_apisecret = cf.get("Apikey", "IOS_apisecret")
 
 
 def get_tradePairs():
@@ -31,11 +33,11 @@ def get_tradePairs():
     out_log(url, response_msg=json.loads(run.response))
     print(json.loads(run.response))
 
-def user_payway_get_list(token_junxin):
+def user_payway_get_list(token):
     # 获取收付款列表
     url = "%s/api/v1/payway/get_list" % B3_url
     body = {
-        "token": token_junxin
+        "token": token
     }
     run = RunMain(url=url, params=None, data=body, headers=get_signture(H5_apikey, H5_apisecret,body), method='POST')
     out_log(url, response_msg=json.loads(run.response))
@@ -83,8 +85,8 @@ def buy_payway_detail(token_wen):
                 buy_pay_detail.append({
                     "pay_way":i['pay_way']
                 })
-        # print(buy_pay_detail)
-        print("获取发布买广告需要的payway_detail")
+        print(buy_pay_detail)
+        # print("获取发布买广告需要的payway_detail")
         return buy_pay_detail
     else:
         print(json.loads(run.response))
@@ -113,21 +115,26 @@ def sell_payway_detail(token_wen):
 
 
 def add_order(token,price,quantity,side,min_trx_cash,pay_way,symbol):
-    # 商户发布买入广告
+    # 商户发布广告
     url = '%s/api/v1/otc/add_order'%B3_url
-    pay_detail = buy_payway_detail(token)
-    payway_detail = json.dumps(pay_detail)
+    payway_detail = []
+    if side == "1":
+        payway_detail = json.dumps(buy_payway_detail(token))
+    elif side == "0":
+        payway_detail = json.dumps(sell_payway_detail(token),ensure_ascii=False)
+    else:
+        return print("side参数不合法")
     # print((buy_pay_detail))
-    # print(pay_detail)
+    print(payway_detail)
     # 发布广告的收付款详情
     body ={
         "token": token,# 文，商户
         "price": str(price),  #发布广告价格
-        "quantity": str(format(quantity,".8f")),  #发布广告数量
+        "quantity":  truncateDecimal(num=quantity,digits=8),  #发布广告数量
         "side": side,  #买卖方向 0=卖出，1=买入
         "source": "app",  #来源，取值web/app
         "min_trx_cash": min_trx_cash, #最低交易金额，最多支持两位小数
-        "max_trx_cash": str(format((price*quantity),".2f")), #最高交易金额，最多支持两位小数
+        "max_trx_cash":  truncateDecimal(num=int(price*quantity),digits=2), #最高交易金额，最多支持两位小数
         "symbol": symbol, #交易对
         "pay_way": pay_way, 	#支持的收付款方式，1=银行卡，2=微信，4=支付宝，可组合使用(数字相加)
         "pay_detail": payway_detail,#银行卡收付款信息详情（JSON数组格式字符串），具体格式定义见 备注
@@ -143,16 +150,16 @@ def add_order(token,price,quantity,side,min_trx_cash,pay_way,symbol):
             way = "卖"
         else:
             way = "买"
-        print("发布%s币广告"%way)
+        print("发布%s币广告成功"%way)
         return order_id
     else:
         print(json.loads(run.response))
 
-def cancel_order(token_wen,order_id):
+def cancel_order(token,order_id):
     #商户下架广告
     url = "%s/api/v1/otc/cancel_order"%B3_url
     body = {
-        "token":token_wen,
+        "token":token,
         "order_id":order_id
     }
     run = RunMain(url= url, params=None, data=body, headers=get_signture(H5_apikey,H5_apisecret,body), method='POST')
@@ -440,17 +447,14 @@ def arbitrate_transaction(token,trx_id):
     run = RunMain(url=url, params=None, data=body,
                   headers=get_signture(H5_apikey,H5_apisecret,body), method='POST')
     out_log(url, response_msg=json.loads(run.response))
-    if json.loads(run.response)["code"] == 1000:
-        return run.response
-    else:
-        print(json.loads(run.response))
+    print(json.loads(run.response))
 
 
-def cancel_all_orders(token_wen):
+def cancel_all_orders(token):
     # 下架商户所有广告
     url = "%s/api/v1/otc/get_orders" % B3_url
     body = {
-        "token": token_wen,
+        "token": token,
         "page_number": "1",
         "page_size": "20",
         "state":"1"
@@ -465,7 +469,7 @@ def cancel_all_orders(token_wen):
         if data != []:
             for i in data:
                 order_id = i["order_id"]
-                cancel_order(token_wen, order_id)
+                cancel_order(token, order_id)
         else:
             print("没有可下架广告")
         return run.response
@@ -776,21 +780,53 @@ def c2c_all(token_wen,token_junxin,sys_token,symbol,amount,price,quantity):
         exit(1)
     time.sleep(3)
 
+def oneclick_add_transaction(token,side,base_currency,amount,trx_cash,pay_way,quote_currency="CNY",nationality=""):
+    # 客户一键下单
+    url = "%s/api/v1/otc/oneclick/add_transaction" % B3_url
+    if side == "0":
+        pay_detail = ''
+    elif side == "1":
+        payway_list = user_payway_get_list(token)
+        if 0 >= int(pay_way) > 7 :
+            return print("pay_way参数不合法")
+        for pay in payway_list:
+            if pay["pay_way"] == int(pay_way):
+                pay_detail=json.dumps(pay["pay_detail"],ensure_ascii=False)
+                print(pay_detail)
+                break
+            else:
+                print("pay_detail参数空缺")
+    else:
+        return print("参数错误")
+    body = {
+        "token": token,
+        "side":side,
+        "base_currency":base_currency,
+        "amount":amount,
+        "trx_cash":trx_cash,
+        "pay_way":pay_way,
+        "pay_detail":pay_detail,
+        "quote_currency":quote_currency,
+        "nationality":nationality,
+    }
+    run = RunMain(url=url, params=None, data=body, headers=get_signture(H5_apikey, H5_apisecret,body), method='POST')
+    out_log(url, send_msg=body,response_msg=json.loads(run.response))
+    print(json.loads(run.response))
+
 if __name__ == "__main__":
-    try:
-        # buy_payway_detail = buy_payway_detail()
-        # sell_payway_detail = sell_payway_detail()
-        # c2c_all(token_wen, token_junxin, sys_token,symbol="BTC-CNY",amount=0.05,price=49000.12,quantity=0.5)
-        # c2c_all(token_wen, token_junxin, sys_token, symbol="USDT-CNY", amount=10.12, price=7.12, quantity=10000)
-        # get_orders(token_wen,state="0",pay_way="7",nationality="0",base_currency="USDT",quote_currency="CNY")
-        # busines_payway_get_list(token_wen)
-        # add_order(token="3177e3a2be78e127d04ecf4f29089c01",price=1, quantity=100, side="0", min_trx_cash="10", pay_way="2", symbol="USDT-CNY")
-        # otc_add_deposit(token=token_wen, symbol="USDT", amount="100")
-        get_assets_c2c(token=token_wen)
-    except Exception:
-        traceback.print_exc(file=open(r'logs\err.log','w+'))
 
-    finally:
-        pass
-        # cancel_all_orders(token_wen) # 下架所有广告
+    # buy_payway_detail = buy_payway_detail(token_junxin)
+    # sell_payway_detail = sell_payway_detail(token_wen)
+    # c2c_all(token_wen, token_junxin, sys_token,symbol="BTC-CNY",amount=0.05,price=49000.12,quantity=0.5)
+    # c2c_all(token_wen, token_junxin, sys_token, symbol="USDT-CNY", amount=10.12, price=7.12, quantity=10000)
+    # get_orders(token_wen,state="0",pay_way="7",nationality="0",base_currency="USDT",quote_currency="CNY")
+    # busines_payway_get_list(token_wen)
+    # add_order(token=token_junxin,price=7.2, quantity=100, side="1", min_trx_cash="10", pay_way=7, symbol="USDT-CNY")
+    # otc_add_deposit(token=token_wen, symbol="USDT", amount="100")
+    # get_assets_c2c(token=token_wen)
+    # user_payway_get_list(token_wen)
+    # arbitrate_transaction(token=token_junxin, trx_id="100")
+    # oneclick_add_transaction(token=token_wen, side="1", base_currency="USDT", amount="0", trx_cash="500", pay_way=2,quote_currency="CNY", nationality="")
 
+    # cancel_all_orders(token_junxin) # 下架所有广告
+    pass

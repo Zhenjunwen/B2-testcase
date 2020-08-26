@@ -2,9 +2,7 @@ import datetime
 
 from appium import webdriver
 import time,traceback
-from get_smscode import get_Verification_Code
-from dateutil.relativedelta import relativedelta
-from DB_config import DB
+from B3APItest.DB_config import DB
 
 # 所使用的平台
 desired_caps = {}

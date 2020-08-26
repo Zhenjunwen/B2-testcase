@@ -1,17 +1,16 @@
 #coding=utf-8
 import hashlib
 import json
-from API_test import RunMain
-import time
-from C2C_api import get_signture
-from DB_config import DB
+from B3APItest.API_test import RunMain
+from B3APItest.C2C_api import get_signture
+from B3APItest.DB_config import DB
 from log import out_log
-from login_register import send_sms
+from B3APItest.login_register import send_sms
 import configparser
 
 cf = configparser.ConfigParser()
 #配置文件路径
-cf.read("F:\mohu-test\config.cfg")
+cf.read("F:\mohu-test\configfile\config.cfg")
 B3_url = cf.get("url","url")
 token_wen = cf.get('token','token_wen')
 token_junxin = cf.get('token','token_junxin')
@@ -64,6 +63,32 @@ def withdraw(token,symbol,amount,address,password,account,chain_id):
     run = RunMain(url=url, params=None, data=body,
                   headers=get_signture(H5_apikey, H5_apisecret, body), method='POST')
     out_log(url,send_msg=body,response_msg=json.loads(run.response))
+    print(json.loads(run.response))
+
+def get_withdrawal_list(token,symbol,page_number="1",page_size="10"):
+    # 获取提币记录
+    url = "%s/api/v1/wallet/get_withdrawal_list" % B3_url
+    body = {
+        "token": token,
+        "symbol": symbol,
+        "page_number": page_number,
+        "page_size": page_size
+    }
+    run = RunMain(url=url, params=None, data=body,
+                  headers=get_signture(H5_apikey, H5_apisecret, body), method='POST')
+    out_log(url, send_msg=body, response_msg=json.loads(run.response))
+    print(json.loads(run.response))
+
+def cancel_withdraw(token,record_id):
+    # 取消提币
+    url = "%s/api/v1/wallet/cancel_withdraw" % B3_url
+    body = {
+        "token": token,
+        "record_id": record_id
+    }
+    run = RunMain(url=url, params=None, data=body,
+                  headers=get_signture(H5_apikey, H5_apisecret, body), method='POST')
+    out_log(url, send_msg=body, response_msg=json.loads(run.response))
     print(json.loads(run.response))
 
 def transfer_fund(token,symbol,amount,side):
@@ -141,12 +166,72 @@ def KYC(token,name,certificate_type,certificate_no):
     out_log(url, send_msg=body, response_msg=json.loads(run.response))
     print(json.loads(run.response))
 
+def validate_address(symbol,chain_id,address):
+    # 验证提币地址是否合法
+    url = "%s/api/v1/wallet/validate_address" % B3_url
+    body = {
+        "symbol": symbol,
+        "chain_id":chain_id,
+        "address":address,
+    }
+    run = RunMain(url=url, params=body, data=None,
+                  headers=get_signture(H5_apikey, H5_apisecret, body), method='GET')
+    out_log(url, send_msg=body, response_msg=json.loads(run.response))
+    print(json.loads(run.response))
 
+def total_assets(token,type,quote_currency=""):
+    # 5205-获取账户折合总资产
+    url = "%s/api/v1/wallet/total_assets" % B3_url
+    body = {
+        "token": token,
+        "type":type,    #资产类型，取值范围：：1=币币资产  2=法币资产  4=合约资产，可组合使用
+        "quote_currency":quote_currency    #计价币种，取值范围：USD | CNY，默认值：USD
+    }
+    run = RunMain(url=url, params=None, data=body,
+                  headers=get_signture(H5_apikey, H5_apisecret, body), method='POST')
+    out_log(url, send_msg=body, response_msg=json.loads(run.response))
+    print(json.loads(run.response))
+
+def get_recharge_list(token,symbol,page_number="1",page_size="10"):
+    # 5205-获取账户折合总资产
+    url = "%s/api/v1/wallet/get_recharge_list" % B3_url
+    body = {
+        "token": token,
+        "symbol":symbol,
+        "page_number":page_number,
+        "page_size":page_size
+
+    }
+    run = RunMain(url=url, params=None, data=body,
+                  headers=get_signture(H5_apikey, H5_apisecret, body), method='POST')
+    out_log(url, send_msg=body, response_msg=json.loads(run.response))
+    print(json.loads(run.response))
+
+def get_recharge_detail(token,record_id):
+    # 5205-获取账户折合总资产
+    url = "%s/api/v1/wallet/get_recharge_detail" % B3_url
+    body = {
+        "token": token,
+        "record_id":record_id
+    }
+    run = RunMain(url=url, params=None, data=body,
+                  headers=get_signture(H5_apikey, H5_apisecret, body), method='POST')
+    out_log(url, send_msg=body, response_msg=json.loads(run.response))
+    print(json.loads(run.response))
 
 if __name__ == "__main__":
-    # withdraw(token="70184cc27a0ed8a4cd75b96ae31b9646", symbol="GK", amount="10", address="2Hbn8bzVx52Ys9E2HpBvzkRztoRHSGXke7X", password="zjw971006", account="15521057551", chain_id="5")
+    # get_recharge_detail(token=token_junxin, record_id='1853')
+    # get_recharge_list(token=token_junxin, symbol="USDT", page_number="1", page_size="10")
+    # get_withdrawal_list(token=token_wen, symbol="ETH")
+    # withdraw(token=token_wen, symbol="ETH", amount="0.05", address="0x769539b4937d4dEE08b363a2135679Fc8baE5772", password="123456", account="15521057551", chain_id="2")
+    # cancel_withdraw(token=token_wen, record_id="6")
     # get_asset_c2c(token_wen)
-    validate_token(token_wen)
-    # transfer_fund(token_wen, symbol="USDT", amount="200", side="1")
+    # validate_token(token_wen)
+    # transfer_fund(token_wen, symbol="USDT", amount="90", side="1")
+    # transfer_fund(token_wen, symbol="USDT", amount="90", side="0")
+    # transfer_fund(token_wen, symbol="-btc", amount="1", side="1")
+    # transfer_fund(token_wen, symbol="BTC", amount="1", side="0")
     # get_transfer_list(token=token_wen, page_number="1", page_size="20", symbol="")
     # KYC(token="f80dfb7a06668d567282da239609c73d",name="甄俊壕",certificate_type="2",certificate_no="440682199710064034")
+    # validate_address(symbol="EOS", chain_id="2", address="0x769539b4937d4dEE08b363a2135679Fc8baE5772")
+    total_assets(token=token_wen, type="7", quote_currency="USD")
