@@ -822,10 +822,10 @@ if __name__ == "__main__":
     # futures_get_fee_rate(token=token_wen, symbol=None)
 
     # 获取用户账户及持仓信息
-    # futures_account_position_info(token="94b0cd2bd8270d7d13c9688a4eaa7df6", symbol="BTC")
+    futures_account_position_info(token=token_wen, symbol="BTC")
 
     # 合约下单 0.卖平 1.卖开 16.买平 17.买开
-    # futures_add_order(token=token_wen, contract_code="BTC_20200925", direction="sell_open", quantity="20",price="20000", lever="5", source="web")
+    # futures_add_order(token=token_wen, contract_code="BTC_20200925", direction="buy_open", quantity="10",price="0", lever="5", source="web")
     # futures_add_order(token="df1323b0c892485a355e97b4bdb8078e", contract_code="BTC_20200925", direction="sell_open", quantity="10",price="10000", lever="20", source="web")
     # futures_add_order(token="b9af43c16aff172301ded42f002c82bf",contract_code="BTC_20200626",direction="buy_open",quantity="100",price="9350.55",lever="20",source="web")
 

@@ -239,7 +239,7 @@ def parameter_get_currency_parameters():
     url = "%s/api/v1/parameter/get_currency_parameters" % B4_url
     run = RunMain(url=url, params=None, data=None,
                   headers=get_signture(IOS_apikey, IOS_apisecret), method='GET')
-    out_log(url,response_msg=json.loads(run.response))
+    out_log(url,response_msg=json.dumps(run.response,ensure_ascii=False))
     print(json.loads(run.response))
 
 def parameter_get_otc_countries():
@@ -302,7 +302,7 @@ if __name__ == "__main__":
     # announcement_get_info(id="1")
     # parameter_get_otc_config()
     # parameter_get_tradePair_config()
-    # parameter_get_currency_parameters()
+    parameter_get_currency_parameters()
     # parameter_get_otc_countries()
     # parameter_get_registration_countries()
     # parameter_get_currency_config(symbol='BTC', chain_id="1")

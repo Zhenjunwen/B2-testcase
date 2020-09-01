@@ -275,6 +275,7 @@ def online_user_email_register(sms_type,account,password,invitation_code=""):
     return token
 
 def modify_nickname(token,nickname):
+    #设置昵称
     url = "%s/api/v1/user/modify_nickname" % B3_url
     body = {
         "token":token,
@@ -301,10 +302,10 @@ if __name__ == "__main__":
     # user_phone_login(sms_type="2", account="16538854915", password="qq111111", type="1", dialing_code="86")
     # user_email_login(sms_type="2", account="00000011@mohukeji.com", password="Qq000000", type="2")
     # user_email_register(sms_type="1", account="00000012@mohukeji.com", password="Qq000000",invitation_code="")
-    user_phone_register(sms_type="1", account="16538854913", password="qq111111",dialing_code="86")
+    # user_phone_register(sms_type="1", account="16538854913", password="qq111111",dialing_code="86")
     # online_user_phone_login(sms_type="2", account="15521057551", password="zjw971006", type="1", dialing_code="86")
     # online_user_email_login(sms_type="2", account="zhenjunwen123@163.com", password="10000123456", type="2")
     # online_user_phone_register(sms_type="1", account="15521057551", password="zjw971006", dialing_code="86")
     # online_user_email_register(sms_type="1", account="zhenjunwen123@163.com", password="zjw971006")
-    # modify_nickname(token=token_wen,nickname="宇宙大帅哥")
+    modify_nickname(token=token_wen,nickname="大帅哥")
     pass

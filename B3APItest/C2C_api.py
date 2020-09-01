@@ -795,7 +795,7 @@ def oneclick_add_transaction(token,side,base_currency,amount,trx_cash,pay_way,qu
                 print(pay_detail)
                 break
             else:
-                print("pay_detail参数空缺")
+                continue
     else:
         return print("参数错误")
     body = {
@@ -806,6 +806,22 @@ def oneclick_add_transaction(token,side,base_currency,amount,trx_cash,pay_way,qu
         "trx_cash":trx_cash,
         "pay_way":pay_way,
         "pay_detail":pay_detail,
+        "quote_currency":quote_currency,
+        "nationality":nationality,
+    }
+    run = RunMain(url=url, params=None, data=body, headers=get_signture(H5_apikey, H5_apisecret,body), method='POST')
+    out_log(url, send_msg=body,response_msg=json.loads(run.response))
+    print(json.loads(run.response))
+
+def oneclick_matched_orders(token,side,base_currency,amount="",trx_cash="",quote_currency="CNY",nationality=""):
+    # 获取一键下单匹配的广告
+    url = "%s/api/v1/otc/oneclick/matched_orders" % B3_url
+    body = {
+        "token": token,
+        "side":side,
+        "base_currency":base_currency,
+        "amount":amount,
+        "trx_cash":trx_cash,
         "quote_currency":quote_currency,
         "nationality":nationality,
     }
@@ -826,7 +842,7 @@ if __name__ == "__main__":
     # get_assets_c2c(token=token_wen)
     # user_payway_get_list(token_wen)
     # arbitrate_transaction(token=token_junxin, trx_id="100")
-    # oneclick_add_transaction(token=token_wen, side="1", base_currency="USDT", amount="0", trx_cash="500", pay_way=2,quote_currency="CNY", nationality="")
-
+    oneclick_add_transaction(token=token_wen, side="1", base_currency="USDT", amount="", trx_cash="500", pay_way=2,quote_currency="CNY", nationality="")
+    # oneclick_matched_orders(token=token_wen, side="1", base_currency="USDT", amount="1", quote_currency="CNY", nationality="")
     # cancel_all_orders(token_junxin) # 下架所有广告
     pass

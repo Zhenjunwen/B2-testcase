@@ -117,17 +117,17 @@ if __name__ == "__main__":
     # funding_activity_detail(activity_id="0")
 
     #8436-参与活动
-    # funding_activity_participate(token="ed37c795681f4c4a0b514926704a8714", activity_id="15", activity_code="fAeeGg")
+    funding_activity_participate(token=token_wen, activity_id="17", activity_code="xEHolV")
 
     #获取我参与的活动
     # funding_activity_participated_activities(token=token_wen,symbol="BTC",page_number="1",page_size="10")
 
     #获取我参与的活动详情
-    # funding_activity_participated_detail(token=token_wen, activity_id="6")
+    # funding_activity_participated_detail(token=token_wen, activity_id="16")
 
     #申请退出活动
-    # funding_activity_exit(token=token_wen, activity_id="13")
+    # funding_activity_exit(token=token_wen, activity_id="15")
 
     #切换活动为进行中
-    funding_activity_switch(token="8f195c7bdfb47bfbd15321f4d7f5c694", activity_id="15")
+    # funding_activity_switch(token=token_wen, activity_id="16")
     pass
