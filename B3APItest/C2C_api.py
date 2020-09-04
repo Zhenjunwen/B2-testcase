@@ -837,7 +837,7 @@ if __name__ == "__main__":
     # c2c_all(token_wen, token_junxin, sys_token, symbol="USDT-CNY", amount=10.12, price=7.12, quantity=10000)
     # get_orders(token_wen,state="0",pay_way="7",nationality="0",base_currency="USDT",quote_currency="CNY")
     # busines_payway_get_list(token_wen)
-    # add_order(token=token_junxin,price=7.2, quantity=100, side="1", min_trx_cash="10", pay_way=7, symbol="USDT-CNY")
+    add_order(token=token_junxin,price=7.2, quantity=100, side="1", min_trx_cash="10", pay_way=7, symbol="USDT-CNY")
     # otc_add_deposit(token=token_wen, symbol="USDT", amount="100")
     # get_assets_c2c(token=token_wen)
     # user_payway_get_list(token_wen)

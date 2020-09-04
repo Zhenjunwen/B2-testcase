@@ -307,5 +307,5 @@ if __name__ == "__main__":
     # online_user_email_login(sms_type="2", account="zhenjunwen123@163.com", password="10000123456", type="2")
     # online_user_phone_register(sms_type="1", account="15521057551", password="zjw971006", dialing_code="86")
     # online_user_email_register(sms_type="1", account="zhenjunwen123@163.com", password="zjw971006")
-    modify_nickname(token=token_wen,nickname="大帅哥")
+    # modify_nickname(token=token_wen,nickname="叫我爸爸")
     pass

@@ -20,6 +20,7 @@ def get_signture(apikey,apisecret,playload=""):
     param = param[:-1]
 
     keyUrlString = urllib.parse.quote(param).upper()
+    # print(keyUrlString)
     sig_str = keyUrlString + apisecret
     # print(sig_str)
     signature = str(hashlib.sha256(sig_str.encode('utf-8')).hexdigest()).upper()

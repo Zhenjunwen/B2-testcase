@@ -3,6 +3,8 @@
 import json
 from API_test import RunMain
 import hashlib
+
+from B1APItest.authentication_KYC import authentication_get_kyc_info
 from DB_config import DB
 from B4APItest.signature import get_signture
 from log import out_log
@@ -10,8 +12,8 @@ import configparser
 
 cf = configparser.ConfigParser()
 #配置文件路径
-cf.read("F:\mohu-test\configfile\B4config.cfg")
 
+cf.read("F:\mohu-test\configfile\B4config.cfg")
 B4_url = cf.get("url", "url")
 token_wen = cf.get('token', 'token_wen')
 token_junxin = cf.get('token', 'token_junxin')
@@ -304,6 +306,7 @@ def online_user_email_register(sms_type,account,password,invitation_code=""):
     return token
 
 def modify_nickname(token,nickname):
+    # 修改昵称
     url = "%s/api/v1/user/modify_nickname" % B4_url
     body = {
         "token":token,
@@ -315,7 +318,7 @@ def modify_nickname(token,nickname):
     print(json.loads(run.response))
 
 if __name__ == "__main__":
-    # send_sms(sms_type="2", account="15521057551", dialing_code="86", token="", language="zh")
+    send_sms(sms_type="2", account="18620074720", dialing_code="86", token="", language="zh")
     # send_email_sms(sms_type="2", account="zhenjunwen123@163.com", token="f80dfb7a06668d567282da239609c73d", language="zh")
     # verification_token = login_step1(account="zhenjunwen123@163.com",password="10000123456",type="2")
     # verification_id = send_email_sms(sms_type="2",account="zhenjunwen123@163.com",token="e30726c6e126048a65053a4d27150c8f",language="zh")
@@ -335,6 +338,7 @@ if __name__ == "__main__":
     # online_user_email_login(sms_type="2", account="zhenjunwen123@163.com", password="10000123456", type="2")
     # online_user_phone_register(sms_type="1", account="15521057551", password="zjw971006", dialing_code="86")
     # online_user_email_register(sms_type="1", account="zhenjunwen123@163.com", password="zjw971006")
-    # modify_nickname(token=token_wen,nickname="宇宙大帅哥")
+    # modify_nickname(token=token_wen,nickname="大帅哥")
     # reset_login_pwd(password="zjw971006", account="15521057551", token="", dialing_code="86")
+    # register_kyc(account="15521057551", password="zjw971006", dialing_code="86", invitation_code="", nationality="")
     pass

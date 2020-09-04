@@ -183,7 +183,7 @@ def futures_open_orders(token, page_number, page_size, symbol="", contract_code=
     print(json.loads(run.response))
 
 
-def futures_close_orders(token, page_number, page_size, state=None, contract_code=None, symbol=None):
+def futures_close_orders(token, page_number, page_size, state="", contract_code="", symbol=""):
     # 3378-获取历史委托
     url = "%s/api/v1/futures/order/close_orders" % B3_url
     body = {
@@ -805,10 +805,10 @@ if __name__ == "__main__":
     # futures_get_fee_rate(token=token_wen, symbol=None)
 
     # 获取用户账户及持仓信息
-    # futures_account_position_info(token="7dc735bca17f4adb80ec25ac6b5ea8b8", symbol="BTC")
+    # futures_account_position_info(token=token_wen, symbol="BTC")
 
     # 合约下单 0.卖平 1.卖开 16.买平 17.买开
-    # futures_add_order(token="3b1a77ae9d2461a98b42e14cd5fdddd0", contract_code="ETH_20200925", direction="buy_open", quantity="10",price="220", lever="20", source="web")
+    # futures_add_order(token=token_wen, contract_code="BTC_20200925", direction="sell_open", quantity="5",price="220", lever="5", source="web")
     # futures_add_order(token="df1323b0c892485a355e97b4bdb8078e", contract_code="BTC_20200925", direction="sell_open", quantity="10",price="10000", lever="20", source="web")
     # futures_add_order(token="b9af43c16aff172301ded42f002c82bf",contract_code="BTC_20200626",direction="buy_open",quantity="100",price="9350.55",lever="20",source="web")
 
@@ -819,7 +819,7 @@ if __name__ == "__main__":
     # futures_open_orders(token=token_wen,page_number="1", page_size="10")
 
     # 获取委托成交明细
-    # futures_trade_detail(token=token_wen, order_id="6904344")
+    # futures_trade_detail(token=token_wen, order_id="44281310")
 
     # 获取历史委托
     # futures_close_orders(token=token_wen, page_number="1", page_size="50")

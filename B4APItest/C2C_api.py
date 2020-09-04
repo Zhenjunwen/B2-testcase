@@ -1,8 +1,10 @@
 # coding=utf-8
 import traceback
 import json
-from B4APItest.API_test import RunMain
+from API_test import RunMain
 import time
+
+from TruncateDecimal import truncateDecimal
 from log import out_log
 from B4APItest.signature import get_signture
 import configparser
@@ -113,21 +115,26 @@ def sell_payway_detail(token_wen):
 
 
 def add_order(token,price,quantity,side,min_trx_cash,pay_way,symbol):
-    # 商户发布买入广告
+    # 商户发布广告
     url = '%s/api/v1/otc/add_order'%B4_url
-    pay_detail = buy_payway_detail(token)
-    payway_detail = json.dumps(pay_detail)
+    payway_detail = []
+    if side == "1":
+        payway_detail = json.dumps(buy_payway_detail(token))
+    elif side == "0":
+        payway_detail = json.dumps(sell_payway_detail(token),ensure_ascii=False)
+    else:
+        return print("side参数不合法")
     # print((buy_pay_detail))
-    # print(pay_detail)
+    print(payway_detail)
     # 发布广告的收付款详情
     body ={
         "token": token,# 文，商户
         "price": str(price),  #发布广告价格
-        "quantity": str(format(quantity,".8f")),  #发布广告数量
+        "quantity":  truncateDecimal(num=quantity,digits=8),  #发布广告数量
         "side": side,  #买卖方向 0=卖出，1=买入
         "source": "app",  #来源，取值web/app
         "min_trx_cash": min_trx_cash, #最低交易金额，最多支持两位小数
-        "max_trx_cash": str(format((price*quantity),".2f")), #最高交易金额，最多支持两位小数
+        "max_trx_cash":  truncateDecimal(num=int(price*quantity),digits=2), #最高交易金额，最多支持两位小数
         "symbol": symbol, #交易对
         "pay_way": pay_way, 	#支持的收付款方式，1=银行卡，2=微信，4=支付宝，可组合使用(数字相加)
         "pay_detail": payway_detail,#银行卡收付款信息详情（JSON数组格式字符串），具体格式定义见 备注
@@ -143,7 +150,7 @@ def add_order(token,price,quantity,side,min_trx_cash,pay_way,symbol):
             way = "卖"
         else:
             way = "买"
-        print("发布%s币广告"%way)
+        print("发布%s币广告成功"%way)
         return order_id
     else:
         print(json.loads(run.response))
@@ -776,6 +783,23 @@ def c2c_all(token_wen,token_junxin,sys_token,symbol,amount,price,quantity):
         exit(1)
     time.sleep(3)
 
+def oneclick_matched_orders(token,side,base_currency,amount="",trx_cash="",quote_currency="CNY",nationality=""):
+    # 获取一键下单匹配的广告
+    url = "%s/api/v1/otc/oneclick/matched_orders" % B4_url
+    body = {
+        "token": token,
+        "side":side,
+        "base_currency":base_currency,
+        "amount":amount,
+        "trx_cash":trx_cash,
+        "quote_currency":quote_currency,
+        "nationality":nationality,
+    }
+    run = RunMain(url=url, params=None, data=body, headers=get_signture(H5_apikey, H5_apisecret,body), method='POST')
+    out_log(url, send_msg=body,response_msg=json.loads(run.response))
+    print(json.loads(run.response))
+
+
 if __name__ == "__main__":
     try:
         # buy_payway_detail = buy_payway_detail()
@@ -784,13 +808,24 @@ if __name__ == "__main__":
         # c2c_all(token_wen, token_junxin, sys_token, symbol="USDT-CNY", amount=10.12, price=7.12, quantity=10000)
         # get_orders(token_wen,state="0",pay_way="7",nationality="0",base_currency="USDT",quote_currency="CNY")
         # busines_payway_get_list(token_wen)
-        # add_order(token="3177e3a2be78e127d04ecf4f29089c01",price=1, quantity=100, side="0", min_trx_cash="10", pay_way="2", symbol="USDT-CNY")
+        # add_order(token=token_wen,price=6.83, quantity=100, side="1", min_trx_cash="100", pay_way="6", symbol="USDT-CNY")
         # otc_add_deposit(token=token_wen, symbol="USDT", amount="100")
-        get_assets_c2c(token=token_wen)
+        # get_assets_c2c(token=token_wen)
+        oneclick_matched_orders(token="3160ad7abce58a0438b256d8db5ee99f", side="1", base_currency="USDT", trx_cash="150", quote_currency="CNY",nationality="")
+        # oneclick_matched_orders(token="94b0cd2bd8270d7d13c9688a4eaa7df6", side="0", base_currency="USDT", trx_cash="100", quote_currency="CNY",nationality="")
+        # oneclick_matched_orders(token="d3c1ffb67b73f2d9d2734128db4990f6", side="0", base_currency="USDT", trx_cash="500", quote_currency="CNY",nationality="")
+        # oneclick_matched_orders(token="2244757a294c56724c82c4304eabdaa5", side="0", base_currency="USDT", trx_cash="500", quote_currency="CNY",nationality="")
+        # oneclick_matched_orders(token="979a4206fecf04a4b23db2ef93f35ddd", side="0", base_currency="USDT", trx_cash="100", quote_currency="CNY",nationality="")
+        # oneclick_matched_orders(token="3fdff761dc1e2e8c3c95fb22f30d112a", side="0", base_currency="USDT", trx_cash="500", quote_currency="CNY",nationality="")
+        # oneclick_matched_orders(token="ae490e3ba8a0ff628c02213a9d22bc33", side="0", base_currency="USDT", trx_cash="500", quote_currency="CNY",nationality="")
+        # oneclick_matched_orders(token="8f195c7bdfb47bfbd15321f4d7f5c694", side="0", base_currency="USDT", trx_cash="500", quote_currency="CNY",nationality="")
+        # oneclick_matched_orders(token="ed37c795681f4c4a0b514926704a8714", side="0", base_currency="USDT", trx_cash="150", quote_currency="CNY",nationality="")
+        # oneclick_matched_orders(token="8de32a463f9f6a6e6d55884a89deabca", side="0", base_currency="USDT", trx_cash="100", quote_currency="CNY",nationality="")
+
+        # cancel_all_orders("18b05ed2f605f2f14f3da0851a689ded")  # 下架所有广告
     except Exception:
         traceback.print_exc(file=open(r'logs\err.log','w+'))
 
     finally:
         pass
-        # cancel_all_orders(token_wen) # 下架所有广告
 

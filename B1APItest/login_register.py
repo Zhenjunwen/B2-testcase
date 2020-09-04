@@ -19,6 +19,10 @@ H5_apikey =cf.get("Apikey","H5_apikey")
 H5_apisecret =cf.get("Apikey","H5_apisecret")
 PC_apikey =cf.get("Apikey","PC_apikey")
 PC_apisecret =cf.get("Apikey","PC_apisecret")
+Android_apikey =cf.get("Apikey","Android_apikey")
+Android_apisecret =cf.get("Apikey","Android_apisecret")
+IOS_apikey=cf.get("Apikey","IOS_apikey")
+IOS_apisecret = cf.get("Apikey","IOS_apisecret")
 host = cf.get("Mysql_DataBase","host")
 port = cf.get("Mysql_DataBase","port")
 user = cf.get("Mysql_DataBase","user")
@@ -37,7 +41,7 @@ def send_sms(sms_type,account,dialing_code="86",token="",language="zh"):
         "language":language #语言，取值："zh"=简体中文, "en"=英文, 默认"zh"
     }
     run = RunMain(url=url, params=None, data=body,
-                  headers=get_signture(PC_apikey,PC_apisecret,body), method='POST')
+                  headers=get_signture(Android_apikey,Android_apisecret,body), method='POST')
     out_log(url,body,json.loads(run.response))
     code = json.loads(run.response)["code"]
     # print(json.loads(run.response))
@@ -92,7 +96,7 @@ def register(account,password,verification_id,verification_code,type,dialing_cod
         "platform":platform # 终端类型，1=移动端 2=PC端
     }
     run = RunMain(url=url, params=None, data=body,
-                  headers=get_signture(PC_apikey,PC_apisecret, body), method='POST')
+                  headers=get_signture(Android_apikey,Android_apisecret, body), method='POST')
     out_log(url,body,json.loads(run.response))
     # print(password)
     code = json.loads(run.response)["code"]
@@ -299,8 +303,8 @@ if __name__ == "__main__":
     # modify_login_pwd(token="f80dfb7a06668d567282da239609c73d", password="10000123456", account="1085751421@qq.com")
     # user_phone_login(sms_type="2", account="15521057551", password="zjw971006", type="1", dialing_code="86")
     # user_email_login(sms_type="2", account="00000011@mohukeji.com", password="Qq000000", type="2")
-    user_email_register(sms_type="1", account="00000001@mohukeji.com", password="Qq000000",invitation_code="")
-    # user_phone_register(sms_type="1", account="16538854942", password="qq111111",dialing_code="86")
+    # user_email_register(sms_type="1", account="00000001@mohukeji.com", password="Qq000000",invitation_code="")
+    user_phone_register(sms_type="1", account="18620074720", password="qq111111",dialing_code="86")
     # online_user_phone_login(sms_type="2", account="15521057551", password="zjw971006", type="1", dialing_code="86")
     # online_user_email_login(sms_type="2", account="zhenjunwen123@163.com", password="10000123456", type="2")
     # online_user_phone_register(sms_type="1", account="15521057551", password="zjw971006", dialing_code="86")

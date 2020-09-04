@@ -26,12 +26,16 @@ def get_signture(apikey,apisecret,playload=""):
     # print(signature)
     UA = ""
     if dic["apikey"] == "W6ykKe6I654UMmEO":
-        UA = "H5"
+        UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36;BiShangEX H5"
+    elif dic["apikey"] == "udTnbTv7GqNnUvpC":
+        UA = "bsex/(iOS) com.mohu.bsex"
+    elif dic["apikey"] == "fkcgD8kGKC6PXjVJ":
+        UA = "Android 11"
     else:
-        UA = "PC"
+        UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36;BiShangEX PC"
 
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36;BiShangEX %s"%UA,
+        "User-Agent": "%s"%UA,
         "Content-Type": "application/x-www-form-urlencoded",
         "apikey": dic["apikey"],
         "timestamp": str(int(round(t * 1000))),
